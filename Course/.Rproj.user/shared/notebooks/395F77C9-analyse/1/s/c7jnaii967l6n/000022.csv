@@ -1,0 +1,4 @@
+"0","# ACP"
+"0","res.pca <- PCA(data2, quali.sup = 1:2, graph = F)"
+"0",""
+"0","fviz_eig(res.pca, addlabels = TRUE, ylim = c(0, 50))"

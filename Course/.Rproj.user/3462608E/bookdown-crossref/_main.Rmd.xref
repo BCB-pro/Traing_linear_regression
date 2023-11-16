@@ -1,0 +1,69 @@
+h1:url-your-book-url-like-httpsbookdown.orgyihuibookdown url: your book url like https://bookdown.org/yihui/bookdown
+h2:variables-dépendantes-et-variables-indépendantes Variables dépendantes et variables indépendantes
+h2:equation-linéaire Equation linéaire
+h2:modélisation-linéaire Modélisation linéaire
+h2:résidus Résidus
+h2:régression-linéaire-une-approche-intuitive Régression linéaire : une approche intuitive
+h2:la-régression-linéaire-mathématiquement La régression linéaire mathématiquement
+h2:notion-de-corrélation Notion de corrélation
+h2:r2-part-de-varianace-expliquée-et-non-expliquée , part de varianace expliquée et non expliquée
+h1:vérification-des-hypothèses Vérification des hypothèses
+h2:introduction Introduction
+h2:indépendance Indépendance
+h3:explications Explications
+h3:exemples-et-figures Exemples et figures :
+h2:linéarité Linéarité
+h3:explications-1 Explications
+h3:exemple Exemple
+h2:homoscédasticité Homoscédasticité
+h3:explications-2 Explications
+h3:exemple-1 Exemple
+h2:valeurs-extrêmes Valeurs extrêmes
+h3:explications-3 Explications
+h3:exemple-2 Exemple
+h2:variable-cachée Variable cachée
+h3:explications-4 Explications
+h1:interprétation Interprétation
+h2:régression-simple Régression simple
+h3:prédicteur-continue Prédicteur continue
+h4:le-modèle Le modèle
+h4:les-coefficients Les coefficients
+h4:test-statistique Test statistique
+h4:r2 
+h3:prédicteur-catégoriel Prédicteur catégoriel
+h4:les-coefficients-1 Les coefficients
+h4:tests-statistiques Tests statistiques
+h4:r2-1 
+h2:régression-multiple Régression multiple
+h3:ajustement Ajustement
+h4:dans-le-cas-de-discret Dans le cas de discret
+h4:dans-le-cas-continu Dans le cas continu
+h3:interaction Interaction
+h1:exemple-1-1 Exemple 1
+h2:explications-5 Explications
+h3:context Context
+h3:problématiques Problématiques
+h2:importation-et-data-management Importation et data management
+h2:statistiques-univariés Statistiques univariés
+h3:table Table
+h3:figures Figures
+h2:exploration-bi-variée Exploration bi-variée
+h3:effet-du-sexe Effet du Sexe
+h4:table-1 Table 1
+h3:effet-de-la-mutation Effet de la mutation
+h4:lien-entre-disease-duration-mutation Lien entre Disease duration & Mutation
+h4:age-at-onset-mutation Age at onset & Mutation
+h4:updrs-mutation UPDRS & Mutation
+h2:régression-linéaire-simple Régression linéaire simple
+h3:catégorisation-des-variables Catégorisation des variables
+h3:age-updrs Age & UPDRS
+h3:disease-duration-updrs Disease duration & UPDRS
+h2:figure-sur-les-données-brutes Figure sur les données brutes
+h2:modélisation Modélisation
+h2:analyse-des-contrastes Analyse des contrastes
+h2:figure-finale Figure finale
+h2:vérifications-des-hypothèses Vérifications des hypothèses
+h3:résidus-1 Résidus
+h3:colinéarité Colinéarité
+h2:prédiction Prédiction
+

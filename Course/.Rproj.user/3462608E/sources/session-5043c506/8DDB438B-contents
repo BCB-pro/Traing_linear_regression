@@ -1,0 +1,384 @@
+--- 
+title: "Régression linéaire"
+author: "Baptiste CRINIERE-BOIZET"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+# url: your book url like https://bookdown.org/yihui/bookdown
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  Linear regression
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(fig.align = "center")
+knitr::opts_chunk$set(out.width="90%")
+```
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+library(MASS)
+library(ggsci)
+```
+
+# Théorie
+
+```{r, results='hide'}
+set.seed(1234)
+X <- rnorm(100, mean = 175, sd = 10)
+Res <- rnorm(100, mean = 0, sd = 5)
+Y <- X + Res
+data <- data.frame(X, Y)
+mod <- lm(Y ~ X, data)
+summary(mod)
+```
+
+
+## Variables dépendantes et variables indépendantes 
+En modélisation linéaire, il existe une distinction importante entre les variables : les variables dépendantes et indépendantes. La dépendance d'une variable n'est pas vraiment une propriété d'une variable, mais le résultat du choix de l'analyste de données. \
+\
+Lorsque nous examinons la relation entre deux variables, décider si l'une est indépendante de l'autre repose sur la logique ou la théorie. Par exemple, en étudiant la taille d'une mère et de son enfant, il est logique de considérer la taille de l'enfant comme dépendante de celle de la mère, car les gènes sont transmis de la mère à l'enfant. Ainsi, la taille de l'enfant dépend en partie de celle de la mère, avec la taille de l'enfant comme variable dépendante et la taille de la mère comme variable indépendante. \
+\
+La variable dépendante est aussi nommée variable réponse ou à expliquer. Une variable indépendante est appelée prédicteur ou explicative. Par exemple, la taille d'un enfant peut être expliquée par les gènes hérités de sa mère, faisant de la taille de l'enfant la variable réponse et celle de la mère la variable explicative. On peut aussi prédire la taille adulte d'un enfant à partir de la taille de sa mère. \
+\
+Dans une modélisation linéaire visant à explorer la relation entre plusieurs variables, il ne peux exister qu'une unique variable dépendante (celle que l'on cherche à expliquer) et plusieurs variables indépendantes utilisées pour expliquer cette variable dépendante. \
+\
+On nomme la variable dépendante $Y$ et les variables explicatives $X_{1}$, $X_{2}$, etc.
+
+
+```{r, fig.cap="Nuage de points"}
+data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(size = 2)+
+  theme_classic()+
+  scale_x_continuous(limits = c(145,205), n.breaks = 10)+
+  scale_y_continuous(limits = c(145,205), n.breaks = 10)+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10))
+```
+
+## Equation linéaire
+Une relation linéaire entre deux variables peut être représentée par une équation sous la forme $Y=b+aX$, où $Y$ est la variable dépendante, $X$ est la variable indépendante, $b$ est l'ordonnée à l'origine, et $a$ est le coefficient directeur de la droite. Graphiquement, cette relation est représentée par une droite. \
+Par convention, on place $Y$ sur l'axe vertical (ordonnées) et $X$ sur l'axe horizontal (abscisses). Grâce à cette équation, en connaissant la valeur de $X$, on peut déterminer celle de $Y$, rendant ainsi la compréhension et l'analyse de la relation plus simples. \
+
+```{r, fig.cap="Equation linéaire"}
+data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_smooth(method = "lm", se = FALSE, color = "darkred", size = 2)+
+  theme_classic()+
+  scale_x_continuous(limits = c(145,205), n.breaks = 10)+
+  scale_y_continuous(limits = c(145,205), n.breaks = 10)+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10))
+```
+
+## Modélisation linéaire
+La régression linéaire est une technique mathématique utilisée pour modéliser la relation entre deux variables continues. Bien que les relations linéaires parfaites soient courantes en théorie, dans la pratique avec des données réelles, les choses sont rarement aussi nettes. En observant le nuage de points de la figure ci-dessous figure, on note une tendance linéaire, même si les données ne s'alignent pas parfaitement sur une droite, il y a du bruit. \
+\
+La régression linéaire vise donc à tracer cette ligne droite, ou ce modèle prédictif, qui approxime au mieux cette tendance observée.
+
+```{r}
+data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(size = 2)+
+  geom_smooth(method = "lm", se = FALSE, color = "darkred", size = 2)+
+  theme_classic()+
+  scale_x_continuous(limits = c(145,205), n.breaks = 10)+
+  scale_y_continuous(limits = c(145,205), n.breaks = 10)+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10))
+```
+
+
+## Résidus
+Lors d'une régression linéaire, nous tentons d'ajuster une droite à un ensemble de données constitué de deux variables. Bien que cette droite puisse souvent approximer avec justesse les tendances observées, des imprécisions subsistent. Ces imprécisions sont les différences entre les valeurs réellement observées et celles prédites par notre droite d'ajustement. Ces différences, connues sous le nom de "résidus" ou "erreurs", donnent une indication sur l'exactitude de notre modèle. \
+\
+Visuellement, lorsque nous observons des points situés au-dessus de la ligne de régression, cela signifie que la valeur observée est supérieure à celle prédite. Inversement, des points situés en dessous de la ligne indiquent une valeur observée inférieure à la prédiction. \
+\
+Mathématiquement, le résidu pour un point donné est calculé comme $e_i= y_i−\hat{y}_i$ , avec $y_i$ est la valeur observée et $\hat{y}_i$ est la valeur prédite par le modèle.
+
+```{r}
+data$fitted3 <- 3.9 + 0.97739 * data$X
+
+data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(size = 2)+
+  geom_abline(intercept = 3.9, slope = 0.97739, color = "darkred", size = 1.5)+
+  geom_segment(aes(xend = X, yend = fitted3), alpha = 1)+
+  theme_classic()+
+  scale_x_continuous(limits = c(145,205), n.breaks = 10)+
+  scale_y_continuous(limits = c(145,205), n.breaks = 10)+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10))
+```
+
+
+
+## Régression linéaire : une approche intuitive
+
+Pour déterminer la meilleure droite qui représente cette relation, nous avons besoin d'un critère de sélection. Une première idée serait d'assurer que, lorsqu'il y a une erreur dans notre prédiction, cette erreur est aussi souvent négative que positive. En termes plus techniques, cela signifie que la distribution de nos résidus (les différences entre les valeurs observées et celles prédites par notre modèle) doit être centrée sur 0. Cela garantit que l'erreur moyenne de nos prédictions est égale à 0. \
+\
+Toutefois, ce seul critère ne suffit pas pour garantir la qualité de notre modèle. \
+Pour illustrer cette idée, considérons une droite horizontale qui représente la moyenne de la variable dépendante Y. Bien que l'erreur moyenne soit nulle pour cette droite, il est évident que ce modèle n'offre aucune capacité prédictive. En effet, il attribue simplement à Y sa valeur moyenne, sans prendre en compte la valeur de la variable indépendante X. \
+Il est essentiel d'aller plus loin dans l'analyse pour s'assurer que notre droite est réellement la plus représentative de la relation entre nos deux variables.
+
+```{r}
+data$fit_bis <- mean(data$Y)
+
+data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(size = 2)+
+  geom_hline(yintercept = mean(Y), color = "darkred", size = 2)+
+  geom_segment(aes(xend = X, yend = fit_bis))+
+  theme_classic()+
+  scale_x_continuous(limits = c(145,205), n.breaks = 10)+
+  scale_y_continuous(limits = c(145,205), n.breaks = 10)+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10))
+```
+
+La régression linéaire cherche à positionner une droite au plus près des points de données. Idéalement, la somme des écarts entre cette droite et les points, appelés résidus, devrait être nulle, mais en réalité, on cherche à la minimiser, à la rendre le plus faible possible. Pour ce faire, on utilise le critère des moindres carrés, qui minimise la somme des résidus au carré, évitant ainsi les compensations entre résidus négatifs et positifs. Cette approche est directement liée à la notion de variance des résidus. La droite optimale aura donc une moyenne des résidus égale à zéro et une somme de leurs carrés (variance) la plus faible possible, représentant ainsi l'estimateur des moindres carrés. \
+\
+Voici trois droites de régression distinctes. La droite qui semble la mieux ajustée en minimisant les résidus est celle située tout à droite.
+
+
+```{r}
+data$fitted1 <- 110 + 0.375 * data$X
+data$fitted2 <- -110 + 1.625 * data$X
+data$fitted3 <- 3.9 + 0.97739 * data$X
+
+fig1 <- data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(alpha = 0.5, size = 0.95)+
+  geom_abline(intercept = 110, slope = 0.375, color = "darkred", size = 1.2)+
+  geom_segment(aes(xend = X, yend = fitted1), alpha = 0.5)+
+  theme_classic()+
+  scale_y_continuous(limits = c(130,220), n.breaks = 10)+
+  labs(x = "")
+
+
+fig2 <- data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(alpha = 0.5, size = 0.95)+
+  geom_abline(intercept = -110, slope = 1.625, color = "darkred", size = 1.2)+
+  geom_segment(aes(xend = X, yend = fitted2), alpha = 0.5)+
+  theme_classic()+
+  scale_y_continuous(limits = c(130,220), n.breaks = 10)+
+  labs(y = "")
+
+
+fig3 <- data %>% 
+  ggplot(aes(x = X, y = Y))+
+  geom_point(alpha = 0.5, size = 0.95)+
+  geom_abline(intercept = 3.9, slope = 0.97739, color = "darkred", size = 1.2)+
+  geom_segment(aes(xend = X, yend = fitted3), alpha = 0.5)+
+  theme_classic()+
+  scale_y_continuous(limits = c(130,220), n.breaks = 10)+
+  labs(y = "", x = "")
+
+plot <- ggarrange(fig1, fig2, fig3, nrow = 1)
+plot
+```
+
+
+## La régression linéaire mathématiquement
+La formulation vectorielle du modèle de régréssion linéaire est la suivante : $y = X\beta + \epsilon$, avec $\epsilon$ qui représente les résidus (les erreurs par rapport à la modélisation) $\epsilon \sim N(0, \sigma^2I_n)$. \
+On suppose en outre que chaque observation est indépendante.
+
+$$
+\text{Avec : }
+y =
+\begin{bmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_n
+\end{bmatrix}
+\text{, }
+X = 
+\begin{bmatrix}
+1 & x_{11} & x_{12} & \dots & x_{1p} \\
+1 & x_{21} & x_{22} & \dots & x_{2p} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_{n1} & x_{n2} & \dots & x_{np}
+\end{bmatrix}
+\text{, }
+\epsilon = 
+\begin{bmatrix}
+\epsilon_1 \\
+\epsilon_2 \\
+\vdots \\
+\epsilon_n
+\end{bmatrix}
+$$
+
+L'estimateur des moindres carrés est donné par la formule suivante : **$\hat{\beta} = (X^T X)^{-1} X^T y$** \
+\
+Dans le cas d'une régression linéaire simple (avec une unique variable indépendante $x$) l'équation de la régression est la suivante
+$y_i = \beta_0 + \beta_1 x_i$, les estimateurs des moindres carrés des coefficients sont donnés par :
+
+$$
+\beta_1 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2} \text{ et } \beta_0 = \bar{y} - \beta_1 \bar{x}
+$$
+
+
+où \(\bar{x}\) et \(\bar{y}\) sont les moyennes des observations \(x\) et \(y\), respectivement.
+
+## Notion de corrélation
+La corrélation est un outil statistique qui évalue la force et la direction de la relation linéaire entre deux variables numériques. Bien qu'une droite de régression des moindres carrés puisse être déterminée pour n'importe quel ensemble de deux variables numériques, sa pertinence dépend grandement des données en question. \
+\
+Dans l'exemple donné des deux droites de corrélation, la droite de régression linéaire sur le côté gauche de la figure semble bien ajustée aux données. En revanche, sur le côté droit, la droite ne correspond pas du tout aux données présentées.
+
+```{r}
+set.seed(123)
+data <- data.frame(x = rnorm(100))
+data$y1 = data$x + rnorm(100, sd=0.1)
+data$y2 = rnorm(100)
+
+
+# Tracer les graphiques
+p1 <- ggplot(data, aes(x = x, y = y1))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE, color = "darkred", size = 2)+
+  theme_classic()+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())+
+  labs(x = "X",
+       y = "Y")
+
+
+p2 <- ggplot(data, aes(x = x, y = y2))+
+  geom_point()+
+  geom_hline(yintercept = 0, size = 2, color = "darkred")+
+  theme_classic()+
+  theme(axis.line = element_line(size = 1.05),
+        axis.title = element_text(size = 12),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())+
+  labs(x = "X",
+       y = "Y")
+
+ggarrange(p1, p2)
+```
+
+C'est Francis Galton qui a introduit l'idée de quantifier la capacité d'une droite de régression à prédire une variable dépendante. Karl Pearson a par la suite affiné cette notion, aboutissant au coefficient de corrélation de Pearson. \
+\
+Pour calculer ce coefficient, on standardise d'abord les deux variables en soustrayant leur moyenne et en divisant par leur écart-type. La formule est :
+\[ r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}} \]
+où $x_i$ et $y_i$ représentent les valeurs des variables, et $\bar{x}$ et $\bar{y}$ leurs moyennes respectives. \
+\
+Ce coefficient oscille entre -1 et 1. Un coefficient positif indique que lorsque l'une des variables augmente, l'autre fait de même. À l'inverse, un coefficient négatif signifie qu'une augmentation d'une variable est associée à une diminution de l'autre. En termes de force, la valeur absolue du coefficient de corrélation se rapprochant de 1 signifie une relation linéaire plus forte entre les deux variables. Un coefficient de 1 ou -1 indique une relation linéaire parfaite.
+\
+\
+Voici une représentation interactive qui, à l'aide de données simulées, vous permet d'ajuster la corrélation entre les variables x et y dans une plage allant de 0 à 1.
+
+```{r echo=FALSE}
+library(plotly)
+library(MASS)
+
+aval <- list()
+for(step in 1:101){
+  correlation <- seq(0,1, by = 0.01)[step]
+  data <- mvrnorm(350, mu = c(0, 0), Sigma = matrix(c(1, correlation, correlation, 1), ncol = 2))
+  aval[[step]] <-list(visible = FALSE,
+                      name = paste0('blabla = ', step),
+                      x=data[,1],
+                      y=data[,2])
+  
+}
+aval[3][[1]]$visible = TRUE
+steps <- list()
+fig <- plot_ly()
+corr <- round(seq(0,1, by = 0.01), 2)
+for (i in 1:101) {
+  fig <- add_trace(fig,x=aval[i][[1]]$x,  y=aval[i][[1]]$y, visible = aval[i][[1]]$visible, 
+                   name = aval[i][[1]]$name, type = 'scatter', mode = 'markers', showlegend = FALSE, 
+                   marker = list(color = 'black', size = 6.5))
+  step <- list(args = list('visible', rep(FALSE, length(aval))),
+               method = 'restyle', label = corr[i])
+  step$args[[2]][i] = TRUE  
+  steps[[i]] = step 
+}
+fig <- fig %>%
+  layout(sliders = list(list(active = 3,
+                             currentvalue = list(prefix = "Correlation = "),
+                             steps = steps)),
+         xaxis = list(showgrid = FALSE, range = c(-5, 5), zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, range = c(-5, 5), zeroline = FALSE, showticklabels = FALSE))
+fig
+```
+
+
+## $R^{2}$, part de varianace expliquée et non expliquée
+La **variance expliquée** fait référence à la partie de la variation totale de la variable dépendante (Y) qui est "capturée" ou "expliquée" par notre modèle de régression. En d'autres termes, c'est la quantité de variation de Y que nous pouvons prévoir à partir de X en utilisant notre modèle. Si cette variance est élevée, cela signifie que notre modèle est assez bon pour prédire la variable dépendante à partir de la (ou des) variable indépendante.\
+\
+La **variance non-expliquée** est la partie de la variation de la variable dépendante (Y) que notre modèle ne parvient pas à capturer ou à expliquer. C'est l'écart entre les valeurs réelles de Y et les valeurs prédites par notre modèle. Si cette variance est faible, cela signifie que notre modèle est précis. Si elle est élevée, cela peut indiquer que notre modèle ne capture pas certains éléments importants qui influencent Y.\
+\
+Le **$R^2$** est une mesure qui nous donne une idée de la proportion de la variance totale de $Y$ qui est expliquée par le modèle. Il varie entre 0 et 1. Un R^2 proche de 1 signifie que notre modèle explique une grande partie de la variance de $Y$, tandis qu'un $R^2$ proche de 0 signifie que le modèle n'explique pas bien la variance de $Y$. En termes simples, $R^2$ est une mesure de la "qualité d'ajustement" de notre modèle à nos données. \
+\
+Le R² est donné par la formule suivante :
+\[ R^2 = 1 - \frac{\text{Somme des carrés des résidus}}{\text{Somme totale des carrés}} = 1 - \frac{\text{Variance non expliquée}}{\text{Variance Totale}} =  \frac{\text{Variance expliquée}}{\text{Variance Totale}}  \]
+
+\
+Pour mieux comprendre la notion de variance expliquée, prenons **un exemple** simple. Imaginons que nous voulons étudier la relation linéaire entre la taille et le poids des souris. La taille est notre variable indépendante, tandis que le poids est notre variable dépendante (à expliquer). D'abord, regardez la figure de gauche. Ici, nous traçons une droite représentant la moyenne du poids des souris, sans prendre en compte leur taille. Nous calculons ensuite la variance du poids. Cela nous donne une idée de la dispersion des poids des souris autour de cette moyenne. Ensuite, nous traçons une droite de régression linéaire qui montre la relation entre la taille et le poids des souris. Après cela, nous calculons la variance des résidus. C'est l'écart entre cette droite de régression et chaque point (souris) sur le graphique. En comparant les deux variances, nous remarquons que la variance des résidus est plus petite que la variance initiale du poids. Ce que cela nous indique, c'est qu'en prenant en compte la taille des souris, nous avons réduit l'incertitude ou la dispersion autour de la moyenne. C'est ce qu'on appelle la "variance expliquée". Ainsi notre modèle explique $R² = 1 - \frac{0.14}{0.32} = 56\%$ de la variance du poids des souris.
+
+```{r}
+set.seed(123)
+data <- mvrnorm(20, mu = c(0, 0), Sigma = matrix(c(1, 0.8, 0.8, 1), ncol = 2)) %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1 > 0 & V2 > 0) %>% 
+  dplyr::mutate(fit1 = mean(V2)) %>% 
+  dplyr::mutate(fit2 = 0.5284 + 0.4290*V1)
+
+
+model <- lm(V2 ~ V1, data = data)
+
+fig1 <- data %>% 
+  ggplot(aes(x= V1, y = V2))+
+  geom_point()+
+  geom_hline(aes(yintercept = mean(V2)), color = "darkblue", size = 2)+
+  geom_segment(aes(xend = V1, yend = fit1), alpha = 0.5)+
+  theme_bw()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())+
+ annotate("text", x = 1.9, y = 0.85, label = "Var(Y) = 0.32",fontface = "bold")+
+  labs(x = "Taille des souris",
+       y = "Poids des souris",
+       title = "Droite moyenne")
+
+fig2 <- data %>% 
+  ggplot(aes(x= V1, y = V2))+
+  geom_point()+
+  geom_abline(aes(intercept = 0.5284, slope = 0.4290), color = "darkred", size = 2)+
+  geom_segment(aes(xend = V1, yend = fit2), alpha = 0.5)+
+  annotate("text", x = 1.5, y = 1.37, label = "Var(Res) = 0.14", fontface = "bold")+
+  theme_bw()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())+
+  labs(x = "Taille des souris",
+       y = "Poids des souris",
+       title = "Régression linéaire")
+
+plot <- ggarrange(fig1, fig2, nrow = 1)
+plot
+```
+

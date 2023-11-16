@@ -1,0 +1,28 @@
+h1:exemple-1 Exemple 1
+h2:explications Explications
+h3:context Context
+h3:problématiques Problématiques
+h2:importation-et-data-management Importation et data management
+h2:statistiques-univariés Statistiques univariés
+h3:table Table
+h3:figures Figures
+h2:exploration-bi-variée Exploration bi-variée
+h3:effet-du-sexe Effet du Sexe
+h4:table-1 Table 1
+h3:effet-de-la-mutation Effet de la mutation
+h4:lien-entre-disease-duration-mutation Lien entre Disease duration & Mutation
+h4:age-at-onset-mutation Age at onset & Mutation
+h4:updrs-mutation UPDRS & Mutation
+h2:régression-linéaire-simple Régression linéaire simple
+h3:catégorisation-des-variables Catégorisation des variables
+h3:age-updrs Age & UPDRS
+h3:disease-duration-updrs Disease duration & UPDRS
+h2:figure-sur-les-données-brutes Figure sur les données brutes
+h2:modélisation Modélisation
+h2:analyse-des-contrastes Analyse des contrastes
+h2:figure-finale Figure finale
+h2:vérifications-des-hypothèses Vérifications des hypothèses
+h3:résidus Résidus
+h3:colinéarité Colinéarité
+h2:prédiction Prédiction
+

@@ -1,0 +1,366 @@
+# Exemple 1 
+```{r}
+# Data simulation
+# libraries
+library(ggsci)
+library(rstatix)
+
+# Simulation des données
+## Seed
+set.seed(123456)
+## Variables indépendantes
+Mutation <- rep(factor(c("m/m", "m/f", "f/f", "m/s", "f/s", "s/s"), levels = c("m/m", "m/f", "f/f", "m/s", "f/s", "s/s")), each = 100)
+Age_at_onset <- round(unlist(lapply(c(36, 34, 33, 30, 29, 27), function(x) rnorm(100, mean = x, sd = 5))))
+Disease_duration <- round(runif(n = 600, min = 0, max = 40))
+# Disease_duration <- 40 - 1/2 * Age_at_onset + rnorm(600, 0, sd = 8.5)
+Disease_duration <- round(abs(Disease_duration))
+Sex <- sample(factor(c("Male", "Female")), 600, replace = TRUE)
+Age <- Disease_duration + Age_at_onset
+
+## Coefficient
+intercept <- 10
+coeff_duration_A <- 0.5
+coeff_duration_B <- 0.75
+coeff_Age_at_onset_at_onset <- 0.25
+
+## Calcul de l'UPDRS
+UPDRS <- intercept + 
+  coeff_duration_A  *  Disease_duration * (Mutation %in% c("m/m", "m/f", "f/f")) +
+  coeff_duration_B  *  Disease_duration * (Mutation %in% c("m/s", "f/s", "s/s")) +
+  coeff_Age_at_onset_at_onset * Age +
+  rnorm(600, mean = 0, sd = 5)
+
+## Data
+data <- data.frame(Mutation, Age_at_onset, Sex, Disease_duration, Age, UPDRS)
+# write.table(data, "/home/baptiste.criniere/Documents/Trainings/Linear regression/Simulation/Data/Exercice1.txt")
+```
+
+## Explications
+
+### Context
+La cohorte dont nous disposons est constituée de 600 patients atteints de la maladie de Parkinson, tous porteurs d'une mutation spécifique parmi un total de six mutations différentes. Dans le cadre de notre étude, nous suivons ces patients et mesurons leur score UPDRS, un indicateur cognitif largement utilisé pour évaluer la sévérité de la maladie de Parkinson. Nous avons également recueilli d'autres informations, notamment la durée de la maladie, l'âge au moment du diagnostic, et l'âge au moment de la participation à l'étude. 
+
+### Problématiques
+**Critère de jugement principal :** \
+Nous visons à comprendre les facteurs qui influencent l'UPDRS (Unified Parkinson's Disease Rating Scale) qui est indicateur de la gravité de la maladie de Parkinson et à éventuellement le prédire en utilisant des variables telles que la durée de la maladie (disease duration). Nous avons des raisons de croire que la gravité de la maladie varie en fonction des mutations spécifiques (mutation senescence vs non-senescence), et nous prévoyons de prendre en compte cette variation. De plus, nous supposons que l'âge au moment de la participation à l'étude peut influencer l'UPDRS, et nous avons l'intention de corriger cette influence. En outre, il est possible que le sexe des patients ait également un impact, que nous examinerons.
+
+**Critère de jugement secondaire :** \
+Nous cherchons également à évaluer dans quelle mesure la mutation peut influencer l'âge auquel le diagnostic de la maladie de Parkinson est posé et le moment où la maladie se manifeste.
+
+
+## Importation et data management
+```{r echo=TRUE}
+data <- read.table("/home/baptiste.criniere/Documents/Trainings/Linear regression/Simulation/Data/Exercice1.txt")
+data <- data %>% 
+  dplyr::mutate(Mutation = Mutation %>% factor) %>% 
+  dplyr::mutate(Sex = Sex %>% factor) %>% 
+  dplyr::mutate(Mutation_bis = ifelse(Mutation %in% c("m/s", "f/s", "s/s"), "senescence", "non-senescence"))
+
+data %>% 
+  DT::datatable(rownames = F, 
+                extensions = "Buttons",
+                options = list(pageLength = 10,
+                             dom = "Blfrtip",
+                             buttons = c("copy", "csv", "excel"))) %>% 
+  DT::formatRound(columns=c("UPDRS"), digits=3) %>% 
+  DT::formatStyle(columns = 'Mutation_bis', whiteSpace = 'nowrap')
+
+```
+
+## Statistiques univariés 
+### Table 
+Voici la première table décrivant le jeu de données. On peut constater que les groupes de mutations sont équilibrés.
+```{r echo=TRUE}
+data %>% 
+  furniture::table1(UPDRS,
+                    "Disease duration" = Disease_duration,
+                    "Age at onset" = Age_at_onset,
+                    Age,
+                    Sex,
+                    Mutation,
+                    "Mutation 2" = Mutation_bis,
+                    output = "html")
+```
+
+### Figures
+On observe que les variables continues Age, Age_at_onset et UPDRS semblent suivre des lois normales. De plus, il y a légèrement plus d'hommes dans notre base de données que de femmes.
+```{r echo=TRUE}
+fig1 <- data %>% 
+  ggplot(aes(x = UPDRS))+
+  geom_histogram(color = "white", fill = ggsci::pal_jama()(10)[1])+
+  theme_classic()+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+fig2 <- data %>% 
+  ggplot(aes(x = Age_at_onset))+
+  geom_histogram(color = "white", fill = ggsci::pal_jama()(10)[2])+
+  labs(x = "Age at onset")+
+  theme_classic()+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+fig3 <- data %>% 
+  ggplot(aes(x = Age))+
+  geom_histogram(color = "white", fill = ggsci::pal_jama()(10)[3])+
+  theme_classic()+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+fig4 <- data %>% 
+  ggplot(aes(x = Sex, fill = Sex))+
+  geom_bar()+
+  scale_fill_manual(values = ggsci::pal_jama()(10)[4:5])+
+  theme_classic()+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+ggarrange(fig1, fig2, fig3, fig4)
+```
+
+## Exploration bi-variée
+### Effet du Sexe
+#### Table 1
+Il ne semble pas y avoir d'effet du sexe sur les autres variables, à l'exception de l'âge au début des symptômes, pour laquelle les hommes présentent un âge au début légèrement inférieur à celui des femmes.
+```{r echo=TRUE}
+data %>% 
+  furniture::table1(Mutation, 
+                    "Age at onset" = Age_at_onset,
+                     "Disease duration" = Disease_duration,
+                    Age,
+                    UPDRS,
+                    splitby =~ Sex,
+                    test = TRUE,
+                    output = "html")
+```
+
+### Effet de la mutation
+Il y a un effet significatif du type de mutation sur les variables suivantes : âge au début des symptômes, âge, et UPDRS. On remarque que les individus porteurs d'une mutation liée à la sénescence semblent avoir en moyenne un âge au début des symptômes plus élevé et un score UPDRS plus élevé.
+```{r echo=TRUE}
+data %>% 
+  furniture::table1("Age at onset" = Age_at_onset,
+                     "Disease duration" = Disease_duration,
+                    Age,
+                    UPDRS,
+                    splitby =~ Mutation,
+                    test = TRUE,
+                    output = "html")
+```
+
+#### Lien entre Disease duration & Mutation
+Dans ce contexte, la variable que l'on cherche à expliquer est la durée de la maladie (DD) en fonction de la variable explicative "mutation". L'équation qui modélise cette relation est donc la suivante : $DD = \beta_0 + \beta_1 Mutation + \epsilon$ \
+\
+On réalise une ANOVA afin de répondre à ce problème. La p-value associée au test ANOVA est supérieure au seuil de 5\%. Par conséquent, nous ne pouvons pas rejeter l'hypothèse nulle, et nous concluons qu'il n'y a pas de preuve d'un lien entre la mutation et la durée de la maladie.
+```{r echo=TRUE}
+aov <- data %>% rstatix::anova_test(Disease_duration ~ Mutation)
+data %>% 
+  ggplot(aes(x = Mutation, y = Disease_duration, color = Mutation))+
+  stat_boxplot(geom ='errorbar', width = 0.4, lwd = 0.85)+
+  geom_boxplot(outlier.shape = NA, lwd = 0.85)+
+  geom_jitter(alpha = 0.45, shape = 1, size = 1)+
+  stat_summary(aes(fill = Mutation), fun = mean, geom = "point", shape = 23, size = 3, position = position_dodge(width=0.75))+
+  scale_color_aaas()+
+  labs(subtitle = rstatix::get_test_label(aov, detailed = TRUE),
+       x = "",
+       y = "Disease duration (in years)")+
+  theme_classic()+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+```
+
+
+
+#### Age at onset & Mutation
+Dans ce contexte, la variable que l'on cherche à expliquer est l'âge de diagnostic (Age) en fonction de la variable explicative "mutation". L'équation qui modélise cette relation est donc la suivante : $Age = \beta_0 + \beta_1 Mutation + \epsilon$ \
+\
+La p-value associée au test ANOVA est inférieure au seuil de 5%, ce qui indique qu'il existe un lien statistiquement significatif entre le type de mutation et l'âge au moment du diagnostic. Par conséquent, nous pouvons effectuer des comparaisons post-hoc afin de déterminer les différences spécifiques entre les types de mutations et l'âge au moment du diagnostic.
+
+```{r echo=TRUE}
+aov <- data %>% rstatix::anova_test(Age_at_onset ~ Mutation)
+data %>% 
+  ggplot(aes(x = Mutation, y = Age_at_onset, color = Mutation))+
+  stat_boxplot(geom ='errorbar', width = 0.4, lwd = 0.85)+
+  geom_boxplot(outlier.shape = NA, lwd = 0.85)+
+  geom_jitter(alpha = 0.45, shape = 1, size = 1)+
+  stat_summary(aes(fill = Mutation), fun = mean, geom = "point", shape = 23, size = 3, position = position_dodge(width=0.75)) +
+  theme_classic()+
+  scale_color_aaas()+
+  scale_fill_aaas()+
+  labs(subtitle = rstatix::get_test_label(aov, detailed = TRUE),
+       x = "",
+       y = "Age at onset at onset (in years)")+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+
+## Modélisation
+model1 <- lm(Age_at_onset ~ Mutation, data = data)
+car::Anova(model1)
+
+## Comparaison post hoc
+data %>% rstatix::tukey_hsd(Age_at_onset ~ Mutation) %>% 
+  dplyr::select(-null.value, -estimate, -conf.low, -conf.high)
+```
+
+#### UPDRS & Mutation
+Dans ce contexte, la variable que l'on cherche à expliquer est l'UPDRS (UPDRS) en fonction de la variable explicative "mutation". L'équation qui modélise cette relation est donc la suivante : $UPDRS = \beta_0 + \beta_1 Mutation + \epsilon$ \
+\
+La p-value associée au test ANOVA est inférieure au seuil de 5%, ce qui indique qu'il existe un lien statistiquement significatif entre le type de mutation et l'UPDRS. Par conséquent, nous pouvons effectuer des comparaisons post-hoc afin de déterminer les différences spécifiques entre les types de mutations et l'UPDRS.
+
+```{r echo=TRUE}
+aov <- data %>% rstatix::anova_test(UPDRS ~ Mutation)
+data %>% 
+  ggplot(aes(x = Mutation, y = UPDRS, color = Mutation))+
+  stat_boxplot(geom ='errorbar', width = 0.4, lwd = 0.85)+
+  geom_boxplot(outlier.shape = NA, lwd = 0.85)+
+  geom_jitter(alpha = 0.45, shape = 1, size = 1)+
+  stat_summary(aes(fill = Mutation), fun = mean, geom = "point", shape = 23, size = 3, position = position_dodge(width=0.75)) +
+  theme_classic()+
+  scale_color_aaas()+
+  scale_fill_aaas()+
+  labs(subtitle = rstatix::get_test_label(aov, detailed = TRUE),
+       x = "",
+       y = "UPDRS")+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+
+## Modélisation
+model1 <- lm(Age_at_onset ~ Mutation, data = data)
+car::Anova(model1)
+
+## Comparaison post hoc
+data %>% rstatix::tukey_hsd(UPDRS ~ Mutation) %>% 
+  dplyr::select(-null.value, -estimate, -conf.low, -conf.high)
+```
+
+## Régression linéaire simple
+
+### Catégorisation des variables
+La variable à expliquer est l'UPDRS, que l'on va chercher à expliquer par l'âge, la mutation (variable mutation_bis), la disease duration, et le sexe.
+
+### Age & UPDRS
+L'équation qui modélise la relation entre l'UPDRS et l'âge est la suivante : $UPDRS = \beta_0 + \beta_1 Age + \epsilon$. Le coefficient de corrélation associé à cette relation est de 0.8, ce qui indique une relation importante, et la p-value associée au test de significativité de ce coefficient est inférieure au seuil de 5%, démontrant ainsi sa signification statistique. Le coefficient $\beta_1$ est égal à 0.7, ce qui signifie qu'en moyenne, pour chaque année supplémentaire d'âge, l'UPDRS augmente de 0.7 points.
+
+```{r echo=TRUE}
+data %>% 
+  ggplot(aes(x = Age, y = UPDRS))+
+  geom_jitter(alpha = 0.5, size = 2)+
+  geom_smooth(method = "lm", se = FALSE, color = "darkred", size = 2)+
+  stat_cor()+
+  theme_classic()+
+  labs(x = "Age (in years)",
+       y = "UPDRS")+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+
+model <- lm(UPDRS ~ Age, data = data)
+summary(model)
+```
+
+
+### Disease duration & UPDRS
+L'équation qui modélise la relation entre l'UPDRS et l'âge est la suivante : $UPDRS = \beta_0 + \beta_1 DD + \epsilon$. Le coefficient de corrélation associé à cette relation est de 0.88, ce qui indique une relation importante, et la p-value associée au test de significativité de ce coefficient est inférieure au seuil de 5%, démontrant ainsi sa signification statistique. Le coefficient $\beta_1$ est égal à 0.9, ce qui signifie qu'en moyenne, pour chaque année supplémentaire de disease duration, l'UPDRS augmente de 0.9 points.
+
+```{r echo=TRUE}
+data %>% 
+  ggplot(aes(x = Disease_duration, y = UPDRS))+
+  geom_jitter(alpha = 0.5, size = 2)+
+  geom_smooth(method = "lm", se = FALSE, color = "darkred", size = 2)+
+  stat_cor()+
+  theme_classic()+
+  labs(x = "Disease duration (in years)",
+       y = "UPDRS (in years)")+
+  theme(legend.position = "none",
+        axis.line = element_line(size = 1, color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))
+
+model <- lm(UPDRS ~ Disease_duration, data = data)
+summary(model)
+```
+
+## Figure sur les données brutes
+```{r echo=TRUE}
+data %>% 
+  dplyr::mutate(Age_discret = cut(Age, 
+                    breaks = quantile(Age, probs = c(0, 0.25, 0.5, 0.75, 1)), 
+                    labels = c("Q1", "Q2", "Q3", "Q4"),
+                    include.lowest = TRUE)) %>% 
+  dplyr::mutate(Mutation_bis = ifelse(Mutation %in% c("m/s", "f/s", "s/s"), "senescence", "non-senescence")) %>% 
+  ggplot(aes(x = Disease_duration, y = UPDRS, color = Mutation_bis))+
+  geom_point(alpha = 0.45)+
+  geom_smooth(aes(group = Mutation_bis), method = "lm", se = FALSE, size = 1.5)+
+  facet_wrap(~ Age_discret, nrow = 1)+
+  theme_classic()+
+  scale_color_aaas()+
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.text = element_text(face = "bold", size = 11),
+        axis.title = element_text(face = "bold", size = 13))+
+  labs(x = "Disease duration (in years)",
+       y = "UPDRS on")
+```
+
+
+## Modélisation
+```{r echo=TRUE}
+data <- data %>% 
+  dplyr::mutate(Mutation_bis = ifelse(Mutation %in% c("m/s", "f/s", "s/s"), "senescence", "non-senescence")) 
+model2 <- lm(UPDRS ~ Disease_duration*Mutation_bis + Age + Sex, data = data)
+Anova(model2)  
+car::vif(model2)
+```
+
+
+## Figure finale
+```{r echo=TRUE}
+interactions::interact_plot(model2,
+                            pred = "Disease_duration",
+                            modx = "Mutation_bis",
+                            mod2 = Age)+
+  theme_classic()+
+  scale_color_aaas()+
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.text = element_text(face = "bold", size = 8),
+        axis.title = element_text(face = "bold", size = 10))+
+  labs(x = "Disease Duration",
+       y = "UPDRS on")
+```
+
+## Vérifications des hypothèses
+
+### Résidus
+```{r echo=TRUE}
+ggResidpanel::resid_panel(model)
+```
+
+### Colinéarité
+```{r echo=TRUE}
+car::vif(model2)
+```
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+"0","aov <- data %>% anova_test(Disease_duration ~ Mutation)"
+"2","Erreur dans anova_test(., Disease_duration ~ Mutation) : 
+  impossible de trouver la fonction ""anova_test""
+"

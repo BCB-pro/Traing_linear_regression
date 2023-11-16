@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapitre 2 Vérification des hypothèses | Régression linéaire</title>
+  <meta name="description" content="Linear regression" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapitre 2 Vérification des hypothèses | Régression linéaire" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Linear regression" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapitre 2 Vérification des hypothèses | Régression linéaire" />
+  
+  <meta name="twitter:description" content="Linear regression" />
+  
+
+<meta name="author" content="Baptiste CRINIERE-BOIZET" />
+
+
+<meta name="date" content="2023-11-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="interprétation.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/codefolding-lua-1.1/codefolding-lua.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.28/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="libs/jszip-1.13.4/jszip.min.js"></script>
+<link href="libs/dt-ext-buttons-1.13.4/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-buttons-1.13.4/js/dataTables.buttons.min.js"></script>
+<script src="libs/dt-ext-buttons-1.13.4/js/buttons.html5.min.js"></script>
+<script src="libs/dt-ext-buttons-1.13.4/js/buttons.colVis.min.js"></script>
+<script src="libs/dt-ext-buttons-1.13.4/js/buttons.print.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Régression linéaire</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Théorie</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#variables-dépendantes-et-variables-indépendantes"><i class="fa fa-check"></i><b>1.1</b> Variables dépendantes et variables indépendantes</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#equation-linéaire"><i class="fa fa-check"></i><b>1.2</b> Equation linéaire</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#modélisation-linéaire"><i class="fa fa-check"></i><b>1.3</b> Modélisation linéaire</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#résidus"><i class="fa fa-check"></i><b>1.4</b> Résidus</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#régression-linéaire-une-approche-intuitive"><i class="fa fa-check"></i><b>1.5</b> Régression linéaire : une approche intuitive</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#la-régression-linéaire-mathématiquement"><i class="fa fa-check"></i><b>1.6</b> La régression linéaire mathématiquement</a></li>
+<li class="chapter" data-level="1.7" data-path="index.html"><a href="index.html#notion-de-corrélation"><i class="fa fa-check"></i><b>1.7</b> Notion de corrélation</a></li>
+<li class="chapter" data-level="1.8" data-path="index.html"><a href="index.html#r2-part-de-varianace-expliquée-et-non-expliquée"><i class="fa fa-check"></i><b>1.8</b> <span class="math inline">\(R^{2}\)</span>, part de varianace expliquée et non expliquée</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html"><i class="fa fa-check"></i><b>2</b> Vérification des hypothèses</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#introduction"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#indépendance"><i class="fa fa-check"></i><b>2.2</b> Indépendance</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications"><i class="fa fa-check"></i><b>2.2.1</b> Explications</a></li>
+<li class="chapter" data-level="2.2.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemples-et-figures"><i class="fa fa-check"></i><b>2.2.2</b> Exemples et figures :</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#linéarité"><i class="fa fa-check"></i><b>2.3</b> Linéarité</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-1"><i class="fa fa-check"></i><b>2.3.1</b> Explications</a></li>
+<li class="chapter" data-level="2.3.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemple"><i class="fa fa-check"></i><b>2.3.2</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#homoscédasticité"><i class="fa fa-check"></i><b>2.4</b> Homoscédasticité</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-2"><i class="fa fa-check"></i><b>2.4.1</b> Explications</a></li>
+<li class="chapter" data-level="2.4.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemple-1"><i class="fa fa-check"></i><b>2.4.2</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#valeurs-extrêmes"><i class="fa fa-check"></i><b>2.5</b> Valeurs extrêmes</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-3"><i class="fa fa-check"></i><b>2.5.1</b> Explications</a></li>
+<li class="chapter" data-level="2.5.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemple-2"><i class="fa fa-check"></i><b>2.5.2</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#variable-cachée"><i class="fa fa-check"></i><b>2.6</b> Variable cachée</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-4"><i class="fa fa-check"></i><b>2.6.1</b> Explications</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="interprétation.html"><a href="interprétation.html"><i class="fa fa-check"></i><b>3</b> Interprétation</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="interprétation.html"><a href="interprétation.html#régression-simple"><i class="fa fa-check"></i><b>3.1</b> Régression simple</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="interprétation.html"><a href="interprétation.html#prédicteur-continue"><i class="fa fa-check"></i><b>3.1.1</b> Prédicteur continue</a></li>
+<li class="chapter" data-level="3.1.2" data-path="interprétation.html"><a href="interprétation.html#prédicteur-catégoriel"><i class="fa fa-check"></i><b>3.1.2</b> Prédicteur catégoriel</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="interprétation.html"><a href="interprétation.html#régression-multiple"><i class="fa fa-check"></i><b>3.2</b> Régression multiple</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="interprétation.html"><a href="interprétation.html#ajustement"><i class="fa fa-check"></i><b>3.2.1</b> Ajustement</a></li>
+<li class="chapter" data-level="3.2.2" data-path="interprétation.html"><a href="interprétation.html#interaction"><i class="fa fa-check"></i><b>3.2.2</b> Interaction</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="exemple-1-1.html"><a href="exemple-1-1.html"><i class="fa fa-check"></i><b>4</b> Exemple 1</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#explications-5"><i class="fa fa-check"></i><b>4.1</b> Explications</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#context"><i class="fa fa-check"></i><b>4.1.1</b> Context</a></li>
+<li class="chapter" data-level="4.1.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#problématiques"><i class="fa fa-check"></i><b>4.1.2</b> Problématiques</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#importation-et-data-management"><i class="fa fa-check"></i><b>4.2</b> Importation et data management</a></li>
+<li class="chapter" data-level="4.3" data-path="exemple-1-1.html"><a href="exemple-1-1.html#statistiques-univariés"><i class="fa fa-check"></i><b>4.3</b> Statistiques univariés</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#table"><i class="fa fa-check"></i><b>4.3.1</b> Table</a></li>
+<li class="chapter" data-level="4.3.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#figures"><i class="fa fa-check"></i><b>4.3.2</b> Figures</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="exemple-1-1.html"><a href="exemple-1-1.html#exploration-bi-variée"><i class="fa fa-check"></i><b>4.4</b> Exploration bi-variée</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#effet-du-sexe"><i class="fa fa-check"></i><b>4.4.1</b> Effet du Sexe</a></li>
+<li class="chapter" data-level="4.4.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#effet-de-la-mutation"><i class="fa fa-check"></i><b>4.4.2</b> Effet de la mutation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="exemple-1-1.html"><a href="exemple-1-1.html#régression-linéaire-simple"><i class="fa fa-check"></i><b>4.5</b> Régression linéaire simple</a>
+<ul>
+<li class="chapter" data-level="4.5.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#catégorisation-des-variables"><i class="fa fa-check"></i><b>4.5.1</b> Catégorisation des variables</a></li>
+<li class="chapter" data-level="4.5.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#age-updrs"><i class="fa fa-check"></i><b>4.5.2</b> Age &amp; UPDRS</a></li>
+<li class="chapter" data-level="4.5.3" data-path="exemple-1-1.html"><a href="exemple-1-1.html#disease-duration-updrs"><i class="fa fa-check"></i><b>4.5.3</b> Disease duration &amp; UPDRS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.6" data-path="exemple-1-1.html"><a href="exemple-1-1.html#figure-sur-les-données-brutes"><i class="fa fa-check"></i><b>4.6</b> Figure sur les données brutes</a></li>
+<li class="chapter" data-level="4.7" data-path="exemple-1-1.html"><a href="exemple-1-1.html#modélisation"><i class="fa fa-check"></i><b>4.7</b> Modélisation</a></li>
+<li class="chapter" data-level="4.8" data-path="exemple-1-1.html"><a href="exemple-1-1.html#analyse-des-contrastes"><i class="fa fa-check"></i><b>4.8</b> Analyse des contrastes</a></li>
+<li class="chapter" data-level="4.9" data-path="exemple-1-1.html"><a href="exemple-1-1.html#figure-finale"><i class="fa fa-check"></i><b>4.9</b> Figure finale</a></li>
+<li class="chapter" data-level="4.10" data-path="exemple-1-1.html"><a href="exemple-1-1.html#vérifications-des-hypothèses"><i class="fa fa-check"></i><b>4.10</b> Vérifications des hypothèses</a>
+<ul>
+<li class="chapter" data-level="4.10.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#résidus-1"><i class="fa fa-check"></i><b>4.10.1</b> Résidus</a></li>
+<li class="chapter" data-level="4.10.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#colinéarité"><i class="fa fa-check"></i><b>4.10.2</b> Colinéarité</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Régression linéaire</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="vérification-des-hypothèses" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapitre 2</span> Vérification des hypothèses<a href="vérification-des-hypothèses.html#vérification-des-hypothèses" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Introduction<a href="vérification-des-hypothèses.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>En statistiques, lorsqu’on utilise la régression linéaire pour modéliser la relation entre des variables, il est essentiel que certaines hypothèses soient respectées pour garantir la validité des résultats et des interprétations. Ces hypothèses sont au nombre de quatre :<br />
+</p>
+<ul>
+<li><p>Linéarité : La relation entre les variables doit être linéaire.</p></li>
+<li><p>Indépendance : Les résidus, qui sont les écarts entre les valeurs observées et les valeurs prédites, doivent être indépendants les uns des autres. On parle aussi d’indépendace des sujets, des individus ou des observations.</p></li>
+<li><p>Homoscédasticité : Les résidus doivent présenter une variance constante à travers toutes les valeurs prédites.</p></li>
+<li><p>Normalité : La distribution des résidus doit suivre une distribution normale.</p></li>
+</ul>
+<p>Si ces conditions ne sont pas remplies, les conclusions tirées de la régression peuvent être incorrectes. Pour valider ces hypothèses, il est courant d’analyser les résidus ou de se questionner sur la nature de nos données.<br />
+</p>
+<p>Pour mieux comprendre et illustrer ces notions, nous allons prendre un exemple concret : étudier la relation entre le poids et la taille. À travers cet exemple, nous verrons comment ces hypothèses jouent un rôle crucial dans l’interprétation des résultats.</p>
+</div>
+<div id="indépendance" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Indépendance<a href="vérification-des-hypothèses.html#indépendance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="explications" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Explications<a href="vérification-des-hypothèses.html#explications" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>L’hypothèse d’indépendance, souvent décrite comme l’indépendance des observations ou des individus, est centrale en régression linéaire. Elle exige que les résidus, les écarts entre les valeurs observées et prédites, soient indépendants les uns des autres.<br />
+<br />
+L’importance de cette hypothèse réside dans sa capacité à assurer que le modèle ne néglige pas des facteurs clés. Par exemple, si des individus d’une même base de données sont regroupés en famille, leurs caractéristiques pourraient être influencées par des éléments génétiques et environnementaux. Ignorer de tels facteurs, comme l’appartenance familiale, peut fausser nos prédictions.<br />
+<br />
+La non-conformité à cette hypothèse peut biaiser les estimations des paramètres, compromettre la fiabilité des tests d’hypothèses et entraîner des conclusions erronées. De mauvais estimateurs peuvent, par exemple, suggérer des relations qui n’existent pas réellement ou masquer des relations existantes.<br />
+<br />
+Pour vérifier cette hypothèse, il est essentiel de visualiser la distribution des résidus. Une distribution non aléatoire des résidus ou des regroupements indique une possible violation. Au-delà de cette visualisation, il est crucial de comprendre l’origine des données et de s’interroger sur d’éventuelles variables omises.<br />
+<br />
+En bref, l’hypothèse d’indépendance assure que notre modèle est exhaustif et que les erreurs proviennent d’aléas, et non d’omissions ou de biais.</p>
+</div>
+<div id="exemples-et-figures" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Exemples et figures :<a href="vérification-des-hypothèses.html#exemples-et-figures" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Nous avons une base de données recensant la taille de 60 adolescents en fonction de leur âge. Notre intention est de réaliser une régression linéaire entre ces deux variables. La taille est naturellement sélectionnée comme variable dépendante, et l’âge comme variable indépendante. Cependant, il y a une subtilité : nos données ne sont pas totalement indépendantes car ces adolescents sont répartis en trois familles distinctes, ce qui introduit une source de variabilité et rompt l’hypothèse d’indépendance.<br />
+<br />
+Sur le graphique suivant, la droite pointillée en rouge représente la régression sans considération de l’effet familial. Les trois autres droites colorées illustrent la relation linéaire spécifique à chaque famille. Il est notable que ces dernières présentent des pentes moins prononcées, suggérant qu’en omettant l’effet familial, on surestime la relation entre la taille et l’âge.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" /><br />
+Le second graphique illustre la différence de la relation entre les résidus et l’âge pour les deux modèles : celui sans effet familial à gauche, et celui prenant en compte cet effet à droite. Lorsque les résidus ne sont pas indépendants et que l’hypothèse d’indépendance n’est pas vérifiée, les résidus tendent à se regrouper par famille. Ce phénomène est corrigé lorsque l’effet familial est inclus dans le modèle.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-14-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="linéarité" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Linéarité<a href="vérification-des-hypothèses.html#linéarité" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="explications-1" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Explications<a href="vérification-des-hypothèses.html#explications-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><br />
+Cette hypothèse ne concerne pas la forme de la relation entre les variables en elles-mêmes, mais plutôt la forme de la relation entre les variables et les coefficients du modèle. En d’autres termes, même si les données semblent suivre une courbe ou une autre forme non linéaire, il est possible d’ajuster un modèle linéaire en transformant les données ou en ajoutant des termes supplémentaires au modèle, comme des termes quadratiques ou cubiques.<br />
+<br />
+Pour vérifier cette hypothèse, on vérifie si les résidus sont dispersés de manière aléatoire sans motif apparent ; si c’est le cas, c’est un bon signe. De plus, un simple graphique illustrant la relation entre nos variables peut offrir une première indication. Si les points semblent suivre une ligne droite, cela suggère une relation linéaire.<br />
+<br />
+Si l’hypothèse de linéarité n’est pas respectée, cela peut entraîner des estimations biaisées et des prédictions inexactes. Il est donc crucial de vérifier cette hypothèse avant de tirer des conclusions à partir d’un modèle de régression linéaire.<br />
+<br />
+</p>
+</div>
+<div id="exemple" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Exemple<a href="vérification-des-hypothèses.html#exemple" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>On essaie toujours d’évaluer la relation entre l’âge et la taille, avec un autre jeu de données. D’après les premières observations visuelles des deux graphiques ci-dessous, la relation entre ces deux variables ne suit pas un schéma linéaire, mais semble plutôt être représentée par une courbe concave.<br />
+Notre premier modèle est le suivant : <span class="math inline">\(Taille = \beta_0 + Age \times \beta_1\)</span>, il ne semble pas convenir.<br />
+En examinant la courbe de résidus par rapport aux valeurs prédites (à droite sur la figure ci-dessous), on observe un lien entre la valeur des résidus et la valeur prédite. Cela indique une défaillance dans l’ajustement du modèle aux données actuelles.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><br />
+Pour améliorer cet ajustement, nous avons ensuite intégré un terme quadratique lié à l’âge, conduisant à un nouveau modèle : <span class="math inline">\(Taille = \beta_0 + Age \times \beta_1 + Age^{2} \times \beta_2\)</span><br />
+</p>
+<p>Le résultat est une courbe qui correspond beaucoup mieux à nos données. On constate aussi que les résidus n’ont plus une relation apparente avec les valeurs prédites, ce qui illustre une amélioration significative de l’adéquation du modèle.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="homoscédasticité" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Homoscédasticité<a href="vérification-des-hypothèses.html#homoscédasticité" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="explications-2" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> Explications<a href="vérification-des-hypothèses.html#explications-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>L’hypothèse d’homoscédasticité, également connue sous le nom d’hypothèse des variances égales, stipule que la variabilité des erreurs (ou résidus) doit rester constante quelle que soit la valeur de la variable indépendante dans une régression linéaire. En d’autres termes, la dispersion des résidus ne devrait pas augmenter ou diminuer systématiquement avec la valeur prédite.<br />
+<br />
+Pour vérifier cette hypothèse, une méthode courante consiste à visualiser les résidus. En traçant les résidus par rapport aux valeurs prédites ou à la variable indépendante, la dispersion des points devrait être à peu près la même sur toute la plage de valeurs. Si, en revanche, les résidus forment un motif en forme d’entonnoir ou montrent une tendance croissante ou décroissante de la dispersion, cela pourrait indiquer une violation de l’homoscédasticité, appelée hétéroscédasticité.<br />
+<br />
+Si l’hétéroscédasticité est présente, cela peut affecter la fiabilité des estimations et des tests statistiques. Comme solution, plusieurs approches peuvent être adoptées. L’une des méthodes courantes consiste à transformer les données, par exemple en utilisant le logarithme de la variable dépendante.</p>
+</div>
+<div id="exemple-1" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> Exemple<a href="vérification-des-hypothèses.html#exemple-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Nous avons mené une nouvelle étude pour mesurer le temps de réaction en fonction de l’âge. Le temps de réaction est notre variable dépendante et l’âge est notre variable explicative.<br />
+<br />
+Après analyse, il semble y avoir un lien entre l’âge et le temps de réaction : plus une personne est âgée, plus son temps de réaction tend à être long. Toutefois, nous avons remarqué que plus l’âge augmente, plus les résultats varient, créant une sorte de dispersion autour de la droite de régression.<br />
+<br />
+Cette dispersion pourrait être due à une variabilité plus faible des temps de réaction chez les jeunes, tandis que chez les personnes plus âgées, les différences sont plus marquées.</p>
+<p>Cela nous amène à penser que l’hypothèse d’homoscédasticité n’est pas respectée ici. En d’autres termes, l’écart entre les valeurs réelles et les valeurs prévues par notre modèle tend à changer avec l’âge.
+<img src="_main_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Pour résoudre ce problème, on peut d’appliquer une transformation logarithmique sur les données du temps de réaction. En faisant cela, on observe que les différences par rapport à la droite de régression dépendent moins de l’âge.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="valeurs-extrêmes" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Valeurs extrêmes<a href="vérification-des-hypothèses.html#valeurs-extrêmes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="explications-3" class="section level3 hasAnchor" number="2.5.1">
+<h3><span class="header-section-number">2.5.1</span> Explications<a href="vérification-des-hypothèses.html#explications-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Les valeurs extrêmes, ou “outliers”, peuvent perturber un modèle de régression linéaire en faussant la pente et l’ordonnée à l’origine. Elles augmentent également l’erreur résiduelle, diminuant la fiabilité du modèle. Pour les détecter, on utilise souvent des graphiques de résidus, où un résidu éloigné des autres signale un outlier. Face à ces valeurs, on peut envisager de les supprimer, effectuer des transformations de données. Il est crucial de comprendre leur origine, car elles peuvent révéler des informations pertinentes sur l’étude en cours.</p>
+</div>
+<div id="exemple-2" class="section level3 hasAnchor" number="2.5.2">
+<h3><span class="header-section-number">2.5.2</span> Exemple<a href="vérification-des-hypothèses.html#exemple-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Dans notre exemple actuel, il y a deux valeurs qui se démarquent nettement, indiquées par une couleur différente. Il est essentiel de réfléchir soigneusement avant de décider si nous devrions les garder ou les retirer de notre analyse.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="variable-cachée" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> Variable cachée<a href="vérification-des-hypothèses.html#variable-cachée" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="explications-4" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> Explications<a href="vérification-des-hypothèses.html#explications-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>L’impact d’une variable cachée est double. D’une part, elle peut fausser la relation apparente entre les variables indépendantes et dépendantes. D’autre part, elle peut masquer une relation réelle ou exagérer une relation inexistante.<br />
+<br />
+Pour savoir si une variable cachée pourrait être un problème, il faut se demander si une variable pertinente a été omise, ou si des résidus présentent des tendances inexplicables. Une autre indication est lorsque des variables, qui devraient théoriquement être non liées à la variable dépendante, montrent une corrélation significative.<br />
+<br />
+Les conséquences d’ignorer une variable cachée sont sérieuses. Elles peuvent mener à des conclusions erronées, influencer les décisions basées sur ces conclusions et rendre le modèle non généralisable.<br />
+<br />
+Pour résoudre ce problème, il est essentiel d’incorporer toutes les variables pertinentes dans le modèle, même si cela nécessite une collecte de données supplémentaire.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="interprétation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-hypotheses.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

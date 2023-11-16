@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapitre 4 Exemple 1 | Régression linéaire</title>
+  <meta name="description" content="Linear regression" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapitre 4 Exemple 1 | Régression linéaire" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Linear regression" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapitre 4 Exemple 1 | Régression linéaire" />
+  
+  <meta name="twitter:description" content="Linear regression" />
+  
+
+<meta name="author" content="Baptiste CRINIERE-BOIZET" />
+
+
+<meta name="date" content="2023-11-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="interprétation.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/codefolding-lua-1.1/codefolding-lua.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.28/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="libs/jszip-1.13.4/jszip.min.js"></script>
+<link href="libs/dt-ext-buttons-1.13.4/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-buttons-1.13.4/js/dataTables.buttons.min.js"></script>
+<script src="libs/dt-ext-buttons-1.13.4/js/buttons.html5.min.js"></script>
+<script src="libs/dt-ext-buttons-1.13.4/js/buttons.colVis.min.js"></script>
+<script src="libs/dt-ext-buttons-1.13.4/js/buttons.print.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Régression linéaire</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Théorie</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#variables-dépendantes-et-variables-indépendantes"><i class="fa fa-check"></i><b>1.1</b> Variables dépendantes et variables indépendantes</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#equation-linéaire"><i class="fa fa-check"></i><b>1.2</b> Equation linéaire</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#modélisation-linéaire"><i class="fa fa-check"></i><b>1.3</b> Modélisation linéaire</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#résidus"><i class="fa fa-check"></i><b>1.4</b> Résidus</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#régression-linéaire-une-approche-intuitive"><i class="fa fa-check"></i><b>1.5</b> Régression linéaire : une approche intuitive</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#la-régression-linéaire-mathématiquement"><i class="fa fa-check"></i><b>1.6</b> La régression linéaire mathématiquement</a></li>
+<li class="chapter" data-level="1.7" data-path="index.html"><a href="index.html#notion-de-corrélation"><i class="fa fa-check"></i><b>1.7</b> Notion de corrélation</a></li>
+<li class="chapter" data-level="1.8" data-path="index.html"><a href="index.html#r2-part-de-varianace-expliquée-et-non-expliquée"><i class="fa fa-check"></i><b>1.8</b> <span class="math inline">\(R^{2}\)</span>, part de varianace expliquée et non expliquée</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html"><i class="fa fa-check"></i><b>2</b> Vérification des hypothèses</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#introduction"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#indépendance"><i class="fa fa-check"></i><b>2.2</b> Indépendance</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications"><i class="fa fa-check"></i><b>2.2.1</b> Explications</a></li>
+<li class="chapter" data-level="2.2.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemples-et-figures"><i class="fa fa-check"></i><b>2.2.2</b> Exemples et figures :</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#linéarité"><i class="fa fa-check"></i><b>2.3</b> Linéarité</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-1"><i class="fa fa-check"></i><b>2.3.1</b> Explications</a></li>
+<li class="chapter" data-level="2.3.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemple"><i class="fa fa-check"></i><b>2.3.2</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#homoscédasticité"><i class="fa fa-check"></i><b>2.4</b> Homoscédasticité</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-2"><i class="fa fa-check"></i><b>2.4.1</b> Explications</a></li>
+<li class="chapter" data-level="2.4.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemple-1"><i class="fa fa-check"></i><b>2.4.2</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#valeurs-extrêmes"><i class="fa fa-check"></i><b>2.5</b> Valeurs extrêmes</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-3"><i class="fa fa-check"></i><b>2.5.1</b> Explications</a></li>
+<li class="chapter" data-level="2.5.2" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#exemple-2"><i class="fa fa-check"></i><b>2.5.2</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#variable-cachée"><i class="fa fa-check"></i><b>2.6</b> Variable cachée</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="vérification-des-hypothèses.html"><a href="vérification-des-hypothèses.html#explications-4"><i class="fa fa-check"></i><b>2.6.1</b> Explications</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="interprétation.html"><a href="interprétation.html"><i class="fa fa-check"></i><b>3</b> Interprétation</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="interprétation.html"><a href="interprétation.html#régression-simple"><i class="fa fa-check"></i><b>3.1</b> Régression simple</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="interprétation.html"><a href="interprétation.html#prédicteur-continue"><i class="fa fa-check"></i><b>3.1.1</b> Prédicteur continue</a></li>
+<li class="chapter" data-level="3.1.2" data-path="interprétation.html"><a href="interprétation.html#prédicteur-catégoriel"><i class="fa fa-check"></i><b>3.1.2</b> Prédicteur catégoriel</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="interprétation.html"><a href="interprétation.html#régression-multiple"><i class="fa fa-check"></i><b>3.2</b> Régression multiple</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="interprétation.html"><a href="interprétation.html#ajustement"><i class="fa fa-check"></i><b>3.2.1</b> Ajustement</a></li>
+<li class="chapter" data-level="3.2.2" data-path="interprétation.html"><a href="interprétation.html#interaction"><i class="fa fa-check"></i><b>3.2.2</b> Interaction</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="exemple-1-1.html"><a href="exemple-1-1.html"><i class="fa fa-check"></i><b>4</b> Exemple 1</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#explications-5"><i class="fa fa-check"></i><b>4.1</b> Explications</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#context"><i class="fa fa-check"></i><b>4.1.1</b> Context</a></li>
+<li class="chapter" data-level="4.1.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#problématiques"><i class="fa fa-check"></i><b>4.1.2</b> Problématiques</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#importation-et-data-management"><i class="fa fa-check"></i><b>4.2</b> Importation et data management</a></li>
+<li class="chapter" data-level="4.3" data-path="exemple-1-1.html"><a href="exemple-1-1.html#statistiques-univariés"><i class="fa fa-check"></i><b>4.3</b> Statistiques univariés</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#table"><i class="fa fa-check"></i><b>4.3.1</b> Table</a></li>
+<li class="chapter" data-level="4.3.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#figures"><i class="fa fa-check"></i><b>4.3.2</b> Figures</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="exemple-1-1.html"><a href="exemple-1-1.html#exploration-bi-variée"><i class="fa fa-check"></i><b>4.4</b> Exploration bi-variée</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#effet-du-sexe"><i class="fa fa-check"></i><b>4.4.1</b> Effet du Sexe</a></li>
+<li class="chapter" data-level="4.4.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#effet-de-la-mutation"><i class="fa fa-check"></i><b>4.4.2</b> Effet de la mutation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="exemple-1-1.html"><a href="exemple-1-1.html#régression-linéaire-simple"><i class="fa fa-check"></i><b>4.5</b> Régression linéaire simple</a>
+<ul>
+<li class="chapter" data-level="4.5.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#catégorisation-des-variables"><i class="fa fa-check"></i><b>4.5.1</b> Catégorisation des variables</a></li>
+<li class="chapter" data-level="4.5.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#age-updrs"><i class="fa fa-check"></i><b>4.5.2</b> Age &amp; UPDRS</a></li>
+<li class="chapter" data-level="4.5.3" data-path="exemple-1-1.html"><a href="exemple-1-1.html#disease-duration-updrs"><i class="fa fa-check"></i><b>4.5.3</b> Disease duration &amp; UPDRS</a></li>
+</ul></li>
+<li class="chapter" data-level="4.6" data-path="exemple-1-1.html"><a href="exemple-1-1.html#figure-sur-les-données-brutes"><i class="fa fa-check"></i><b>4.6</b> Figure sur les données brutes</a></li>
+<li class="chapter" data-level="4.7" data-path="exemple-1-1.html"><a href="exemple-1-1.html#modélisation"><i class="fa fa-check"></i><b>4.7</b> Modélisation</a></li>
+<li class="chapter" data-level="4.8" data-path="exemple-1-1.html"><a href="exemple-1-1.html#analyse-des-contrastes"><i class="fa fa-check"></i><b>4.8</b> Analyse des contrastes</a></li>
+<li class="chapter" data-level="4.9" data-path="exemple-1-1.html"><a href="exemple-1-1.html#figure-finale"><i class="fa fa-check"></i><b>4.9</b> Figure finale</a></li>
+<li class="chapter" data-level="4.10" data-path="exemple-1-1.html"><a href="exemple-1-1.html#vérifications-des-hypothèses"><i class="fa fa-check"></i><b>4.10</b> Vérifications des hypothèses</a>
+<ul>
+<li class="chapter" data-level="4.10.1" data-path="exemple-1-1.html"><a href="exemple-1-1.html#résidus-1"><i class="fa fa-check"></i><b>4.10.1</b> Résidus</a></li>
+<li class="chapter" data-level="4.10.2" data-path="exemple-1-1.html"><a href="exemple-1-1.html#colinéarité"><i class="fa fa-check"></i><b>4.10.2</b> Colinéarité</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Régression linéaire</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="exemple-1-1" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapitre 4</span> Exemple 1<a href="exemple-1-1.html#exemple-1-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="explications-5" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Explications<a href="exemple-1-1.html#explications-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="context" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Context<a href="exemple-1-1.html#context" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>La cohorte dont nous disposons est constituée de 600 patients atteints de la maladie de Parkinson, tous porteurs d’une mutation spécifique parmi un total de six mutations différentes. Dans le cadre de notre étude, nous suivons ces patients et mesurons leur score UPDRS, un indicateur cognitif largement utilisé pour évaluer la sévérité de la maladie de Parkinson. Nous avons également recueilli d’autres informations, notamment la durée de la maladie, l’âge au moment du diagnostic, et l’âge au moment de la participation à l’étude.</p>
+</div>
+<div id="problématiques" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> Problématiques<a href="exemple-1-1.html#problématiques" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Critère de jugement principal :</strong><br />
+Nous visons à comprendre les facteurs qui influencent l’UPDRS (Unified Parkinson’s Disease Rating Scale) qui est indicateur de la gravité de la maladie de Parkinson et à éventuellement le prédire en utilisant des variables telles que la durée de la maladie (disease duration). Nous avons des raisons de croire que la gravité de la maladie varie en fonction des mutations spécifiques (mutation senescence vs non-senescence), et nous prévoyons de prendre en compte cette variation. De plus, nous supposons que l’âge au moment de la participation à l’étude peut influencer l’UPDRS, et nous avons l’intention de corriger cette influence. En outre, il est possible que le sexe des patients ait également un impact, que nous examinerons.</p>
+<p><strong>Critère de jugement secondaire :</strong><br />
+Nous cherchons également à évaluer dans quelle mesure la mutation peut influencer l’âge auquel le diagnostic de la maladie de Parkinson est posé et le moment où la maladie se manifeste.</p>
+</div>
+</div>
+<div id="importation-et-data-management" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Importation et data management<a href="exemple-1-1.html#importation-et-data-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="exemple-1-1.html#cb1-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;/home/baptiste.criniere/Documents/Trainings/Linear regression/Simulation/Data/Exercice1.txt&quot;</span>)</span>
+<span id="cb1-2"><a href="exemple-1-1.html#cb1-2" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb1-3"><a href="exemple-1-1.html#cb1-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Mutation =</span> Mutation <span class="sc">%&gt;%</span> factor) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href="exemple-1-1.html#cb1-4" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Sex =</span> Sex <span class="sc">%&gt;%</span> factor) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-5"><a href="exemple-1-1.html#cb1-5" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Mutation_bis =</span> <span class="fu">ifelse</span>(Mutation <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;m/s&quot;</span>, <span class="st">&quot;f/s&quot;</span>, <span class="st">&quot;s/s&quot;</span>), <span class="st">&quot;senescence&quot;</span>, <span class="st">&quot;non-senescence&quot;</span>))</span>
+<span id="cb1-6"><a href="exemple-1-1.html#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="exemple-1-1.html#cb1-7" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb1-8"><a href="exemple-1-1.html#cb1-8" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> F, </span>
+<span id="cb1-9"><a href="exemple-1-1.html#cb1-9" tabindex="-1"></a>                <span class="at">extensions =</span> <span class="st">&quot;Buttons&quot;</span>,</span>
+<span id="cb1-10"><a href="exemple-1-1.html#cb1-10" tabindex="-1"></a>                <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">10</span>,</span>
+<span id="cb1-11"><a href="exemple-1-1.html#cb1-11" tabindex="-1"></a>                             <span class="at">dom =</span> <span class="st">&quot;Blfrtip&quot;</span>,</span>
+<span id="cb1-12"><a href="exemple-1-1.html#cb1-12" tabindex="-1"></a>                             <span class="at">buttons =</span> <span class="fu">c</span>(<span class="st">&quot;copy&quot;</span>, <span class="st">&quot;csv&quot;</span>, <span class="st">&quot;excel&quot;</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-13"><a href="exemple-1-1.html#cb1-13" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns=</span><span class="fu">c</span>(<span class="st">&quot;UPDRS&quot;</span>), <span class="at">digits=</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-14"><a href="exemple-1-1.html#cb1-14" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(<span class="at">columns =</span> <span class="st">&#39;Mutation_bis&#39;</span>, <span class="at">whiteSpace =</span> <span class="st">&#39;nowrap&#39;</span>)</span></code></pre></div>
+</details>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-a9e59331fc14428d09df" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-a9e59331fc14428d09df">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"data":[["m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/m","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","m/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","f/f","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","m/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","f/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s","s/s"],[40,35,34,36,47,40,43,49,42,34,31,30,36,42,41,36,32,41,44,39,32,42,36,37,38,34,36,40,41,33,32,36,31,22,30,32,44,41,41,30,31,41,37,32,37,33,31,35,41,30,27,34,38,43,44,34,31,29,35,35,33,38,37,32,39,35,35,36,34,32,43,39,27,38,29,41,32,36,28,24,42,32,28,39,31,36,40,38,39,35,34,42,39,34,40,40,38,44,36,37,30,39,28,37,38,39,28,34,29,40,30,35,34,32,33,32,29,39,32,33,40,26,23,24,31,38,33,36,29,36,34,29,38,37,26,38,33,43,35,30,44,35,32,39,40,30,38,24,32,36,35,39,32,34,33,40,30,42,38,38,32,35,35,22,32,27,24,37,25,32,26,43,39,32,40,32,35,32,44,37,31,34,40,35,36,40,27,31,31,38,26,32,40,35,32,35,36,34,33,32,27,33,37,37,43,37,27,36,34,39,23,35,33,34,37,32,35,31,36,40,40,32,24,33,33,33,30,28,30,38,40,29,37,30,32,31,29,37,30,31,34,32,35,30,33,37,29,31,32,33,34,30,34,36,21,36,36,30,26,36,31,38,38,38,25,46,31,33,29,35,33,34,27,34,36,41,42,33,22,36,31,41,34,38,37,31,35,37,40,31,30,29,38,36,29,23,35,28,45,44,36,33,36,26,25,29,26,27,35,28,11,27,37,34,24,32,34,38,20,36,32,29,30,23,35,24,38,27,37,35,24,33,21,34,30,25,31,31,35,31,32,33,33,31,33,32,25,26,31,25,31,29,28,27,18,33,37,37,22,31,22,35,24,40,21,33,39,26,33,36,30,29,38,37,43,33,36,36,25,17,33,36,26,37,32,37,29,33,24,29,28,28,19,30,33,26,27,35,30,31,30,31,33,29,27,21,30,32,32,22,35,22,22,35,26,21,27,31,32,29,26,25,30,32,36,31,30,32,31,24,20,24,28,28,31,27,28,26,38,27,24,33,22,26,23,31,36,29,26,24,35,29,30,25,24,31,32,23,33,28,25,31,23,24,37,33,27,22,22,33,30,21,30,30,26,39,27,21,32,25,27,26,28,27,26,23,34,30,27,41,30,25,36,32,34,32,28,31,28,27,24,32,27,35,26,40,28,27,25,29,36,27,36,29,31,30,24,29,31,22,30,21,36,32,36,22,24,25,22,28,35,28,23,22,28,30,22,26,37,19,34,27,29,32,28,29,35,26,23,28,29,22,30,30,34,28,26,28,36,28,28,20,26,26,30,31,28,21,37,34,30,22,30,28,36,22,32,23,26,32,33,30,28,25,29,26,25,26,19,24,28,23,23,20,23,16,28,22,37,30],["Female","Male","Female","Male","Female","Male","Female","Female","Male","Male","Male","Female","Male","Female","Male","Male","Female","Female","Male","Male","Male","Male","Male","Female","Female","Male","Female","Male","Female","Male","Male","Male","Male","Male","Female","Female","Female","Male","Female","Female","Male","Male","Male","Female","Female","Female","Male","Male","Male","Female","Female","Female","Female","Female","Female","Female","Female","Female","Male","Female","Female","Female","Female","Male","Female","Female","Male","Female","Female","Male","Male","Female","Male","Male","Male","Male","Female","Male","Female","Male","Female","Male","Male","Female","Male","Female","Male","Female","Female","Female","Female","Female","Female","Male","Male","Male","Female","Female","Male","Male","Female","Male","Female","Male","Male","Female","Male","Female","Male","Female","Male","Female","Female","Female","Male","Male","Male","Female","Male","Female","Male","Female","Male","Male","Female","Male","Male","Male","Male","Female","Female","Female","Male","Male","Male","Female","Male","Male","Female","Male","Female","Female","Female","Female","Female","Male","Female","Male","Female","Male","Male","Female","Male","Female","Female","Female","Male","Female","Female","Female","Female","Male","Female","Female","Male","Male","Male","Male","Male","Female","Male","Male","Female","Female","Male","Female","Male","Female","Female","Female","Female","Female","Female","Female","Male","Male","Male","Male","Male","Female","Female","Female","Female","Female","Female","Female","Male","Female","Female","Female","Female","Female","Male","Male","Female","Male","Male","Female","Male","Female","Female","Male","Female","Male","Male","Female","Male","Male","Female","Female","Female","Male","Female","Female","Male","Female","Male","Female","Female","Female","Female","Female","Female","Male","Male","Female","Male","Female","Female","Female","Male","Female","Male","Female","Male","Female","Male","Male","Female","Female","Male","Female","Female","Male","Male","Female","Female","Female","Female","Male","Female","Male","Male","Male","Male","Female","Female","Female","Female","Male","Male","Female","Male","Male","Female","Female","Male","Male","Male","Female","Male","Female","Female","Male","Female","Male","Male","Female","Female","Male","Male","Female","Female","Male","Male","Female","Female","Female","Male","Male","Male","Female","Male","Male","Male","Female","Female","Male","Female","Male","Male","Male","Female","Female","Male","Male","Female","Female","Male","Male","Female","Male","Female","Female","Female","Female","Male","Female","Female","Male","Female","Female","Female","Male","Female","Female","Male","Male","Female","Female","Female","Male","Male","Male","Male","Male","Female","Female","Male","Male","Male","Male","Female","Female","Male","Male","Female","Male","Male","Male","Male","Female","Male","Female","Male","Male","Male","Female","Male","Male","Male","Male","Male","Male","Female","Male","Male","Female","Female","Female","Male","Male","Female","Male","Male","Male","Female","Male","Female","Female","Male","Male","Male","Male","Male","Male","Male","Male","Male","Female","Female","Female","Male","Female","Female","Female","Male","Female","Female","Female","Female","Female","Male","Male","Male","Male","Female","Male","Male","Male","Male","Male","Male","Female","Male","Male","Female","Male","Male","Male","Female","Male","Male","Male","Male","Male","Female","Male","Female","Female","Male","Female","Male","Female","Female","Male","Female","Female","Male","Male","Male","Male","Female","Female","Male","Male","Male","Male","Male","Male","Male","Female","Female","Male","Male","Male","Female","Male","Male","Female","Female","Female","Male","Female","Male","Female","Female","Female","Male","Female","Male","Male","Female","Male","Female","Female","Male","Male","Male","Female","Male","Male","Male","Male","Female","Male","Female","Female","Male","Female","Female","Female","Male","Female","Female","Female","Female","Female","Male","Female","Male","Female","Female","Male","Male","Female","Male","Male","Female","Female","Female","Male","Female","Male","Male","Male","Male","Male","Female","Female","Male","Male","Male","Female","Male","Male","Male","Male","Male","Female","Female","Male","Male","Male","Female","Female","Female","Male","Female","Female","Female","Female","Male","Male","Male","Female","Male","Male","Female","Female","Female","Male","Male","Female","Male","Male","Male","Male","Male","Female","Male","Female","Male","Male","Male","Male","Male","Female","Female","Female","Male","Male","Male","Male","Female","Female","Male","Female","Male","Male","Male","Female","Male","Female","Male","Female","Male","Male","Female","Male"],[22,19,25,24,33,32,6,29,39,14,4,26,23,4,19,13,17,28,27,27,27,17,30,11,17,35,33,30,2,29,18,25,18,11,33,9,25,2,14,24,15,34,36,39,37,28,16,15,28,30,27,4,24,26,16,22,1,19,28,29,12,38,10,27,37,25,2,22,34,26,26,28,19,35,31,12,11,38,26,10,10,20,30,28,22,33,8,21,21,22,18,7,38,34,33,23,37,24,21,2,20,23,18,35,36,1,5,4,35,38,11,6,36,9,2,8,13,7,32,4,36,36,34,14,34,10,31,33,14,26,14,31,17,38,15,36,15,38,25,22,2,19,13,10,13,21,21,11,31,34,3,30,1,40,11,21,2,38,10,32,20,20,22,9,31,6,3,1,15,27,32,20,27,26,35,13,34,35,23,21,9,5,5,12,0,13,12,18,15,36,23,28,21,9,32,15,26,29,6,18,21,2,40,25,8,21,4,5,13,20,16,36,9,21,26,13,16,36,19,25,28,7,24,35,12,4,22,39,39,26,6,10,4,37,20,31,6,8,3,17,21,26,3,36,22,18,9,23,17,33,27,23,26,15,10,15,4,36,2,26,1,11,6,28,11,23,36,11,21,27,27,9,21,29,38,7,26,21,21,21,26,27,21,28,29,34,37,8,4,13,30,22,6,38,33,24,28,4,28,10,0,9,5,3,9,33,22,2,2,36,34,28,30,19,35,25,40,37,34,35,28,13,8,12,3,38,0,16,26,8,40,6,7,13,30,1,3,9,35,31,36,30,19,6,15,38,21,37,13,2,21,7,22,4,10,17,32,35,4,29,9,13,14,9,21,4,23,25,31,17,30,35,25,17,21,29,0,13,6,33,20,9,29,27,2,1,24,10,32,22,9,17,1,1,30,22,23,14,26,13,35,13,22,22,8,27,22,5,17,29,8,31,8,1,10,35,27,20,8,7,5,20,9,24,35,38,25,9,35,27,39,37,26,11,1,17,16,1,32,23,27,38,2,33,31,2,24,30,21,5,14,11,12,5,3,28,21,22,18,33,7,39,0,4,2,37,14,16,25,12,14,1,24,13,33,0,35,24,24,30,19,7,15,17,23,33,27,38,2,38,4,7,6,5,35,12,9,20,28,3,21,18,25,22,2,2,16,2,37,18,19,9,37,31,8,40,29,34,19,2,13,2,33,37,19,38,29,11,9,21,33,28,8,31,28,37,40,17,14,26,29,31,10,17,5,18,9,35,24,16,22,27,19,21,11,35,14,18,39,35,11,24,2,6,24,26,40,18,24,8,16,8,35,16,16,32,1,24,19,10,25,27,12,28,14,5,18,25,38,19,8,11,28,17,15,24,39,4,19,36],[62,54,59,60,80,72,49,78,81,48,35,56,59,46,60,49,49,69,71,66,59,59,66,48,55,69,69,70,43,62,50,61,49,33,63,41,69,43,55,54,46,75,73,71,74,61,47,50,69,60,54,38,62,69,60,56,32,48,63,64,45,76,47,59,76,60,37,58,68,58,69,67,46,73,60,53,43,74,54,34,52,52,58,67,53,69,48,59,60,57,52,49,77,68,73,63,75,68,57,39,50,62,46,72,74,40,33,38,64,78,41,41,70,41,35,40,42,46,64,37,76,62,57,38,65,48,64,69,43,62,48,60,55,75,41,74,48,81,60,52,46,54,45,49,53,51,59,35,63,70,38,69,33,74,44,61,32,80,48,70,52,55,57,31,63,33,27,38,40,59,58,63,66,58,75,45,69,67,67,58,40,39,45,47,36,53,39,49,46,74,49,60,61,44,64,50,62,63,39,50,48,35,77,62,51,58,31,41,47,59,39,71,42,55,63,45,51,67,55,65,68,39,48,68,45,37,52,67,69,64,46,39,41,67,52,62,35,45,33,48,55,58,38,66,55,55,38,54,49,66,61,53,60,51,31,51,40,66,28,62,32,49,44,66,36,69,67,44,50,62,60,43,48,63,74,48,68,54,43,57,57,68,55,66,66,65,72,45,44,44,60,51,44,74,62,47,63,32,73,54,36,42,41,29,34,62,48,29,37,64,45,55,67,53,59,57,74,75,54,71,60,42,38,35,38,62,38,43,63,43,64,39,28,47,60,26,34,40,70,62,68,63,52,37,48,70,46,63,44,27,52,36,50,31,28,50,69,72,26,60,31,48,38,49,42,37,62,51,64,53,60,64,63,54,64,62,36,49,31,50,53,45,55,64,34,38,53,43,56,51,37,45,20,31,63,48,50,49,56,44,65,44,55,51,35,48,52,37,49,51,43,53,30,36,36,56,54,51,40,36,31,45,39,56,71,69,55,41,66,51,59,61,54,39,32,44,44,27,70,50,51,71,24,59,54,33,60,59,47,29,49,40,42,30,27,59,53,45,51,61,32,70,23,28,39,70,41,38,47,45,44,22,54,43,59,39,62,45,56,55,46,33,43,44,49,56,61,68,29,79,34,32,42,37,69,44,37,51,56,30,45,50,52,57,28,42,44,29,62,47,55,36,73,60,39,70,53,63,50,24,43,23,69,69,55,60,53,36,31,49,68,56,31,53,56,67,62,43,51,45,63,58,39,49,33,47,44,61,47,44,51,49,49,51,45,63,40,46,75,63,39,44,28,32,54,57,68,39,61,42,46,30,65,44,52,54,33,47,45,42,58,57,40,53,43,31,43,51,57,43,36,34,51,37,38,40,67,26,56,66],[29.3360860878923,35.2232279562787,36.2144342594998,45.4373709032681,38.7830047737734,39.6599348623457,20.7556213248158,40.291210281,55.1378467479235,24.0454055282993,17.0008999407333,37.284588112502,40.388927338949,27.6620236888864,20.1990720817843,34.8157352661453,29.9580585287748,45.3607745401894,38.0068396561685,41.5417832916188,28.265842055707,35.3137945280121,46.6995366303439,35.2552128863884,34.2975308209346,48.2255139865625,39.9561463339874,37.099507859135,23.3003013143376,47.6311321010842,31.8085954426491,30.9494685911721,24.9828312746244,18.6909521975562,37.9829466215552,24.7995510266118,34.5874434568328,18.0319245664801,28.9476918156541,38.97186394634,23.1346165424366,49.4388341829631,40.5144303532477,48.827516980968,49.5818330469499,34.1708934723576,25.8598514117863,28.1634084935334,40.86444782727,36.2775325751005,33.9286416047784,27.223394299614,38.199976597757,44.0593753936093,24.4601162080671,34.3956997139112,13.9998320621885,30.2425180092604,42.2596406923105,42.5573334110968,36.0565152005207,49.2013587295489,29.1669165529294,30.6030853728484,52.6079581492154,41.3087639978034,23.4021375451112,39.3275166305665,44.7997094596669,43.5889505835801,38.7256230839284,39.5482870678889,27.6090250290887,40.9048566725904,46.8646023798993,26.8174466108847,22.7580857824754,44.2567856550271,34.529913045789,16.8838260702716,21.2991380663062,31.6242714458692,40.4935183240899,38.5340023391407,40.8602349726159,47.3209784789943,22.0506070785665,28.6066482779,36.4228092502822,28.8098899196426,28.0592664682563,23.7417636478836,49.8268551723338,47.8813974225903,36.8605965983632,29.3732147078572,43.7735570444833,36.2718563698157,31.9737466161059,26.2295732713523,25.3360860878923,39.2232279562787,29.4644342594998,53.9373709032681,38.7830047737734,16.1599348623457,16.2556213248158,17.791210281,48.8878467479235,43.5454055282993,22.0008999407333,23.534588112502,49.638927338949,28.9120236888864,5.44907208178433,30.0657352661453,26.2080585287748,29.1107745401894,38.7568396561685,22.7917832916188,37.015842055707,45.5637945280121,46.4495366303439,34.2552128863884,45.2975308209346,30.4755139865625,37.7061463339874,38.349507859135,29.3003013143376,46.1311321010842,29.3085954426491,33.6994685911721,25.9828312746244,42.6909521975562,23.4829466215552,46.5495510266118,24.3374434568328,45.5319245664801,35.6976918156541,37.47186394634,16.6346165424366,36.6888341829631,22.0144303532477,28.827516980968,32.3318330469499,28.1708934723576,31.3598514117863,22.4134084935334,40.86444782727,40.7775325751005,17.9286416047784,47.973394299614,19.449976597757,52.3093753936093,17.9601162080671,35.1456997139112,14.4998320621885,47.7425180092604,29.5096406923105,45.5573334110968,41.8065152005207,34.9513587295489,37.6669165529294,14.6030853728484,46.3579581492154,25.0587639978034,21.4021375451112,23.8275166305665,28.2997094596669,44.3389505835801,38.9756230839284,34.5482870678889,36.6090250290887,32.6548566725904,52.6146023798993,25.3174466108847,40.7580857824754,41.0067856550271,36.279913045789,28.3838260702716,17.7991380663062,20.8742714458692,24.7435183240899,25.5340023391407,25.6102349726159,33.3209784789943,21.8006070785665,24.6066482779,29.9228092502822,40.0598899196426,29.8092664682563,36.9917636478836,37.3268551723338,29.3813974225903,34.1105965983632,22.1232147078572,35.0235570444833,37.5218563698157,19.9737466161059,36.9795732713523,25.3360860878923,21.9732279562787,48.2144342594998,46.4373709032681,19.0330047737734,30.6599348623457,15.2556213248158,19.041210281,33.6378467479235,29.7954055282993,24.0008999407333,46.034588112502,29.138927338949,38.4120236888864,24.4490720817843,33.8157352661453,29.9580585287748,48.8607745401894,30.0068396561685,40.2917832916188,31.015842055707,25.3137945280121,39.1995366303439,52.2552128863884,29.2975308209346,24.7255139865625,30.2061463339874,40.849507859135,48.3003013143377,46.6311321010842,24.8085954426491,17.9494685911721,15.9828312746244,40.1909521975562,28.7329466215552,41.0495510266118,16.5874434568328,21.5319245664801,17.9476918156541,33.97186394634,28.3846165424366,41.1888341829631,15.2644303532477,46.077516980968,37.3318330469499,27.6708934723576,20.1098514117863,33.1634084935334,30.36444782727,39.2775325751005,35.6786416047784,40.473394299614,38.699976597757,34.0593753936093,14.2101162080671,29.6456997139112,17.4998320621885,43.2425180092604,20.5096406923105,40.5573334110968,27.3065152005207,28.9513587295489,26.4169165529294,32.8530853728484,29.6079581492154,42.5587639978034,47.9021375451112,30.3275166305665,33.7997094596669,45.0889505835801,36.9756230839284,24.0482870678889,29.1090250290887,35.4048566725904,53.8646023798993,23.0674466108847,36.5080857824754,30.7567856550271,29.279913045789,28.1338260702716,30.5491380663062,39.1242714458692,35.2435183240899,38.2840023391407,47.6102349726159,46.8209784789943,42.5506070785665,18.6066482779,23.9228092502822,21.0598899196426,36.0592664682563,31.7417636478836,25.5768551723338,51.3813974225903,34.1105965983632,25.8732147078572,36.2735570444833,17.2718563698157,39.4737466161059,33.9795732713523,11.8360860878923,29.4732279562787,22.9644342594998,27.9373709032681,17.5330047737734,45.9099348623457,34.0056213248158,15.041210281,26.1378467479235,48.0454055282993,43.0008999407333,45.034588112502,53.388927338949,41.6620236888864,36.6990720817843,49.0657352661453,57.7080585287748,60.6107745401894,45.7568396561685,55.5417832916188,36.015842055707,32.3137945280121,30.6995366303439,35.5052128863884,23.7975308209346,57.4755139865625,15.7061463339874,27.349507859135,46.8003013143377,34.3811321010842,56.3085954426491,17.4494685911721,15.9828312746244,26.4409521975562,43.2329466215552,17.2995510266118,15.5874434568328,23.0319245664801,51.9476918156541,52.22186394634,48.1346165424366,51.9388341829631,31.5144303532477,25.327516980968,35.8318330469499,50.9208934723576,33.3598514117863,51.6634084935334,30.36444782727,14.5275325751005,35.6786416047784,29.973394299614,39.699976597757,24.5593753936093,15.9601162080671,34.6456997139112,46.7498320621885,52.9925180092604,22.0096406923105,48.8073334110968,33.3065152005207,32.9513587295489,32.4169165529294,21.3530853728484,41.3579581492154,26.0587639978034,45.9021375451112,45.3275166305665,50.0497094596669,42.0889505835801,45.9756230839284,51.0482870678889,41.1090250290887,31.4048566725904,48.1146023798993,44.8174466108847,15.5080857824754,28.7567856550271,20.279913045789,40.6338260702716,31.5491380663062,26.6242714458692,46.4935183240899,44.0340023391407,26.6102349726159,23.8209784789943,37.3006070785665,21.6066482779,48.9228092502822,32.8098899196426,22.0592664682563,31.9917636478836,17.3268551723338,22.3813974225903,40.3605965983632,30.6232147078572,36.2735570444833,30.0218563698157,40.7237466161059,36.2295732713523,45.3360860878923,32.9732279562787,39.2144342594998,47.6873709032681,17.0330047737734,37.9099348623457,35.0056213248158,19.291210281,40.3878467479235,39.5454055282993,23.0008999407333,46.784588112502,27.638927338949,23.9120236888864,12.1990720817843,56.3157352661453,42.9580585287748,41.8607745401894,22.7568396561685,25.7917832916188,11.515842055707,38.3137945280121,31.6995366303439,49.7552128863884,56.0475308209346,59.2255139865625,38.7061463339874,21.599507859135,54.3003013143377,50.6311321010842,54.3085954426491,46.1994685911721,36.7328312746244,22.9409521975562,14.4829466215552,33.7995510266118,27.8374434568328,13.7819245664801,49.6976918156541,43.22186394634,37.1346165424366,59.9388341829631,11.7644303532477,51.077516980968,49.3318330469499,14.6708934723576,39.1098514117863,45.4134084935334,37.11444782727,17.2775325751005,29.6786416047784,33.973394299614,30.199976597757,25.0593753936093,10.4601162080671,45.1456997139112,34.4998320621885,36.4925180092604,38.7596406923105,52.0573334110968,32.0565152005207,57.9513587295489,18.1669165529294,12.3530853728484,26.3579581492154,59.0587639978034,33.9021375451112,35.3275166305665,41.2997094596669,36.3389505835801,29.9756230839284,15.0482870678889,38.1090250290887,25.6548566725904,55.8646023798993,17.3174466108847,48.2580857824754,36.0067856550271,40.029913045789,39.6338260702716,29.0491380663062,22.1242714458692,32.9935183240899,31.5340023391407,46.1102349726159,52.3209784789943,41.5506070785665,48.8566482779,19.6728092502822,51.8098899196426,17.5592664682563,21.2417636478836,26.5768551723338,26.8813974225903,45.6105965983632,22.1232147078572,22.5235570444833,35.0218563698157,42.2237466161059,25.2295732713523,29.8360860878923,38.2232279562787,40.7144342594998,49.1873709032681,10.7830047737734,17.6599348623457,28.5056213248158,15.041210281,58.6378467479235,30.2954055282993,34.2508999407333,26.034588112502,60.138927338949,52.4120236888864,11.4490720817843,63.5657352661453,44.2080585287748,55.3607745401894,33.5068396561685,19.0417832916188,20.515842055707,19.3137945280121,57.1995366303439,62.7552128863884,40.0475308209346,56.9755139865625,41.2061463339874,21.849507859135,26.0503013143376,45.6311321010842,52.0585954426491,38.1994685911721,17.4828312746244,41.4409521975562,40.7329466215552,54.5495510266118,50.3374434568328,29.7819245664801,31.4476918156541,44.22186394634,41.6346165424366,51.4388341829631,21.5144303532477,36.577516980968,24.5818330469499,30.1708934723576,23.8598514117863,49.6634084935334,39.36444782727,29.2775325751005,36.1786416047784,48.223394299614,37.199976597757,42.3093753936093,20.9601162080671,51.3956997139112,25.9998320621885,33.7425180092604,60.5096406923105,54.0573334110968,36.8065152005207,40.2013587295489,20.9169165529294,14.8530853728484,46.6079581492154,47.5587639978034,60.1521375451112,37.0775166305665,44.0497094596669,32.5889505835801,31.9756230839284,22.2982870678889,49.1090250290887,28.1548566725904,41.3646023798993,45.0674466108847,15.5080857824754,36.5067856550271,33.529913045789,21.3838260702716,36.5491380663062,43.1242714458692,29.9935183240899,42.0340023391407,37.8602349726159,25.0709784789943,30.3006070785665,34.8566482779,53.6728092502822,28.5598899196426,21.0592664682563,24.7417636478836,45.3268551723338,35.8813974225903,22.8605965983632,30.1232147078572,52.5235570444833,16.7718563698157,35.4737466161059,58.9795732713523],["non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","non-senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence","senescence"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Mutation<\/th>\n      <th>Age_at_onset<\/th>\n      <th>Sex<\/th>\n      <th>Disease_duration<\/th>\n      <th>Age<\/th>\n      <th>UPDRS<\/th>\n      <th>Mutation_bis<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"dom":"Blfrtip","buttons":["copy","csv","excel"],"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,3,4,5]}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'white-space':'nowrap'});\n}"}},"evals":["options.columnDefs.0.render","options.rowCallback"],"jsHooks":[]}</script>
+</div>
+<div id="statistiques-univariés" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Statistiques univariés<a href="exemple-1-1.html#statistiques-univariés" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="table" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Table<a href="exemple-1-1.html#table" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Voici la première table décrivant le jeu de données. On peut constater que les groupes de mutations sont équilibrés.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="exemple-1-1.html#cb2-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="exemple-1-1.html#cb2-2" tabindex="-1"></a>  furniture<span class="sc">::</span><span class="fu">table1</span>(UPDRS,</span>
+<span id="cb2-3"><a href="exemple-1-1.html#cb2-3" tabindex="-1"></a>                    <span class="st">&quot;Disease duration&quot;</span> <span class="ot">=</span> Disease_duration,</span>
+<span id="cb2-4"><a href="exemple-1-1.html#cb2-4" tabindex="-1"></a>                    <span class="st">&quot;Age at onset&quot;</span> <span class="ot">=</span> Age_at_onset,</span>
+<span id="cb2-5"><a href="exemple-1-1.html#cb2-5" tabindex="-1"></a>                    Age,</span>
+<span id="cb2-6"><a href="exemple-1-1.html#cb2-6" tabindex="-1"></a>                    Sex,</span>
+<span id="cb2-7"><a href="exemple-1-1.html#cb2-7" tabindex="-1"></a>                    Mutation,</span>
+<span id="cb2-8"><a href="exemple-1-1.html#cb2-8" tabindex="-1"></a>                    <span class="st">&quot;Mutation 2&quot;</span> <span class="ot">=</span> Mutation_bis,</span>
+<span id="cb2-9"><a href="exemple-1-1.html#cb2-9" tabindex="-1"></a>                    <span class="at">output =</span> <span class="st">&quot;html&quot;</span>)</span></code></pre></div>
+</details>
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th>
+Mean/Count (SD/%)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+</td>
+<td>
+n = 600
+</td>
+</tr>
+<tr>
+<td>
+UPDRS
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+34.5 (11.4)
+</td>
+</tr>
+<tr>
+<td>
+Disease duration
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+20.0 (11.3)
+</td>
+</tr>
+<tr>
+<td>
+Age at onset
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+31.7 (5.8)
+</td>
+</tr>
+<tr>
+<td>
+Age
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+51.7 (13.0)
+</td>
+</tr>
+<tr>
+<td>
+Sex
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Female
+</td>
+<td>
+288 (48%)
+</td>
+</tr>
+<tr>
+<td>
+Male
+</td>
+<td>
+312 (52%)
+</td>
+</tr>
+<tr>
+<td>
+Mutation
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+f/f
+</td>
+<td>
+100 (16.7%)
+</td>
+</tr>
+<tr>
+<td>
+f/s
+</td>
+<td>
+100 (16.7%)
+</td>
+</tr>
+<tr>
+<td>
+m/f
+</td>
+<td>
+100 (16.7%)
+</td>
+</tr>
+<tr>
+<td>
+m/m
+</td>
+<td>
+100 (16.7%)
+</td>
+</tr>
+<tr>
+<td>
+m/s
+</td>
+<td>
+100 (16.7%)
+</td>
+</tr>
+<tr>
+<td>
+s/s
+</td>
+<td>
+100 (16.7%)
+</td>
+</tr>
+<tr>
+<td>
+Mutation 2
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+non-senescence
+</td>
+<td>
+300 (50%)
+</td>
+</tr>
+<tr>
+<td>
+senescence
+</td>
+<td>
+300 (50%)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="figures" class="section level3 hasAnchor" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Figures<a href="exemple-1-1.html#figures" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>On observe que les variables continues Age, Age_at_onset et UPDRS semblent suivre des lois normales. De plus, il y a légèrement plus d’hommes dans notre base de données que de femmes.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="exemple-1-1.html#cb3-1" tabindex="-1"></a>fig1 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="exemple-1-1.html#cb3-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> UPDRS))<span class="sc">+</span></span>
+<span id="cb3-3"><a href="exemple-1-1.html#cb3-3" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">fill =</span> ggsci<span class="sc">::</span><span class="fu">pal_jama</span>()(<span class="dv">10</span>)[<span class="dv">1</span>])<span class="sc">+</span></span>
+<span id="cb3-4"><a href="exemple-1-1.html#cb3-4" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb3-5"><a href="exemple-1-1.html#cb3-5" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb3-6"><a href="exemple-1-1.html#cb3-6" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb3-7"><a href="exemple-1-1.html#cb3-7" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-8"><a href="exemple-1-1.html#cb3-8" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span>
+<span id="cb3-9"><a href="exemple-1-1.html#cb3-9" tabindex="-1"></a>fig2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-10"><a href="exemple-1-1.html#cb3-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Age_at_onset))<span class="sc">+</span></span>
+<span id="cb3-11"><a href="exemple-1-1.html#cb3-11" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">fill =</span> ggsci<span class="sc">::</span><span class="fu">pal_jama</span>()(<span class="dv">10</span>)[<span class="dv">2</span>])<span class="sc">+</span></span>
+<span id="cb3-12"><a href="exemple-1-1.html#cb3-12" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age at onset&quot;</span>)<span class="sc">+</span></span>
+<span id="cb3-13"><a href="exemple-1-1.html#cb3-13" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb3-14"><a href="exemple-1-1.html#cb3-14" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb3-15"><a href="exemple-1-1.html#cb3-15" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb3-16"><a href="exemple-1-1.html#cb3-16" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-17"><a href="exemple-1-1.html#cb3-17" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span>
+<span id="cb3-18"><a href="exemple-1-1.html#cb3-18" tabindex="-1"></a>fig3 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-19"><a href="exemple-1-1.html#cb3-19" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Age))<span class="sc">+</span></span>
+<span id="cb3-20"><a href="exemple-1-1.html#cb3-20" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">fill =</span> ggsci<span class="sc">::</span><span class="fu">pal_jama</span>()(<span class="dv">10</span>)[<span class="dv">3</span>])<span class="sc">+</span></span>
+<span id="cb3-21"><a href="exemple-1-1.html#cb3-21" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb3-22"><a href="exemple-1-1.html#cb3-22" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb3-23"><a href="exemple-1-1.html#cb3-23" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb3-24"><a href="exemple-1-1.html#cb3-24" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-25"><a href="exemple-1-1.html#cb3-25" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span>
+<span id="cb3-26"><a href="exemple-1-1.html#cb3-26" tabindex="-1"></a>fig4 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-27"><a href="exemple-1-1.html#cb3-27" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sex, <span class="at">fill =</span> Sex))<span class="sc">+</span></span>
+<span id="cb3-28"><a href="exemple-1-1.html#cb3-28" tabindex="-1"></a>  <span class="fu">geom_bar</span>()<span class="sc">+</span></span>
+<span id="cb3-29"><a href="exemple-1-1.html#cb3-29" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> ggsci<span class="sc">::</span><span class="fu">pal_jama</span>()(<span class="dv">10</span>)[<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>])<span class="sc">+</span></span>
+<span id="cb3-30"><a href="exemple-1-1.html#cb3-30" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb3-31"><a href="exemple-1-1.html#cb3-31" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb3-32"><a href="exemple-1-1.html#cb3-32" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb3-33"><a href="exemple-1-1.html#cb3-33" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-34"><a href="exemple-1-1.html#cb3-34" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span>
+<span id="cb3-35"><a href="exemple-1-1.html#cb3-35" tabindex="-1"></a><span class="fu">ggarrange</span>(fig1, fig2, fig3, fig4)</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-41-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="exploration-bi-variée" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Exploration bi-variée<a href="exemple-1-1.html#exploration-bi-variée" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="effet-du-sexe" class="section level3 hasAnchor" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> Effet du Sexe<a href="exemple-1-1.html#effet-du-sexe" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="table-1" class="section level4 hasAnchor" number="4.4.1.1">
+<h4><span class="header-section-number">4.4.1.1</span> Table 1<a href="exemple-1-1.html#table-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Il ne semble pas y avoir d’effet du sexe sur les autres variables, à l’exception de l’âge au début des symptômes, pour laquelle les hommes présentent un âge au début légèrement inférieur à celui des femmes.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="exemple-1-1.html#cb4-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="exemple-1-1.html#cb4-2" tabindex="-1"></a>  furniture<span class="sc">::</span><span class="fu">table1</span>(Mutation, </span>
+<span id="cb4-3"><a href="exemple-1-1.html#cb4-3" tabindex="-1"></a>                    <span class="st">&quot;Age at onset&quot;</span> <span class="ot">=</span> Age_at_onset,</span>
+<span id="cb4-4"><a href="exemple-1-1.html#cb4-4" tabindex="-1"></a>                     <span class="st">&quot;Disease duration&quot;</span> <span class="ot">=</span> Disease_duration,</span>
+<span id="cb4-5"><a href="exemple-1-1.html#cb4-5" tabindex="-1"></a>                    Age,</span>
+<span id="cb4-6"><a href="exemple-1-1.html#cb4-6" tabindex="-1"></a>                    UPDRS,</span>
+<span id="cb4-7"><a href="exemple-1-1.html#cb4-7" tabindex="-1"></a>                    <span class="at">splitby =</span><span class="sc">~</span> Sex,</span>
+<span id="cb4-8"><a href="exemple-1-1.html#cb4-8" tabindex="-1"></a>                    <span class="at">test =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-9"><a href="exemple-1-1.html#cb4-9" tabindex="-1"></a>                    <span class="at">output =</span> <span class="st">&quot;html&quot;</span>)</span></code></pre></div>
+</details>
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th>
+Female
+</th>
+<th>
+Male
+</th>
+<th>
+P-Value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+</td>
+<td>
+n = 288
+</td>
+<td>
+n = 312
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Mutation
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.143
+</td>
+</tr>
+<tr>
+<td>
+f/f
+</td>
+<td>
+54 (18.8%)
+</td>
+<td>
+46 (14.7%)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+f/s
+</td>
+<td>
+43 (14.9%)
+</td>
+<td>
+57 (18.3%)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+m/f
+</td>
+<td>
+55 (19.1%)
+</td>
+<td>
+45 (14.4%)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+m/m
+</td>
+<td>
+52 (18.1%)
+</td>
+<td>
+48 (15.4%)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+m/s
+</td>
+<td>
+40 (13.9%)
+</td>
+<td>
+60 (19.2%)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+s/s
+</td>
+<td>
+44 (15.3%)
+</td>
+<td>
+56 (17.9%)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Age at onset
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.01
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+32.3 (6.0)
+</td>
+<td>
+31.1 (5.6)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Disease duration
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.62
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+20.3 (11.2)
+</td>
+<td>
+19.8 (11.4)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Age
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.114
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+52.6 (12.7)
+</td>
+<td>
+50.9 (13.2)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+UPDRS
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.403
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+34.9 (11.1)
+</td>
+<td>
+34.1 (11.7)
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="effet-de-la-mutation" class="section level3 hasAnchor" number="4.4.2">
+<h3><span class="header-section-number">4.4.2</span> Effet de la mutation<a href="exemple-1-1.html#effet-de-la-mutation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Il y a un effet significatif du type de mutation sur les variables suivantes : âge au début des symptômes, âge, et UPDRS. On remarque que les individus porteurs d’une mutation liée à la sénescence semblent avoir en moyenne un âge au début des symptômes plus élevé et un score UPDRS plus élevé.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="exemple-1-1.html#cb5-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="exemple-1-1.html#cb5-2" tabindex="-1"></a>  furniture<span class="sc">::</span><span class="fu">table1</span>(<span class="st">&quot;Age at onset&quot;</span> <span class="ot">=</span> Age_at_onset,</span>
+<span id="cb5-3"><a href="exemple-1-1.html#cb5-3" tabindex="-1"></a>                     <span class="st">&quot;Disease duration&quot;</span> <span class="ot">=</span> Disease_duration,</span>
+<span id="cb5-4"><a href="exemple-1-1.html#cb5-4" tabindex="-1"></a>                    Age,</span>
+<span id="cb5-5"><a href="exemple-1-1.html#cb5-5" tabindex="-1"></a>                    UPDRS,</span>
+<span id="cb5-6"><a href="exemple-1-1.html#cb5-6" tabindex="-1"></a>                    <span class="at">splitby =</span><span class="sc">~</span> Mutation,</span>
+<span id="cb5-7"><a href="exemple-1-1.html#cb5-7" tabindex="-1"></a>                    <span class="at">test =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-8"><a href="exemple-1-1.html#cb5-8" tabindex="-1"></a>                    <span class="at">output =</span> <span class="st">&quot;html&quot;</span>)</span></code></pre></div>
+</details>
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th>
+f/f
+</th>
+<th>
+f/s
+</th>
+<th>
+m/f
+</th>
+<th>
+m/m
+</th>
+<th>
+m/s
+</th>
+<th>
+s/s
+</th>
+<th>
+P-Value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+</td>
+<td>
+n = 100
+</td>
+<td>
+n = 100
+</td>
+<td>
+n = 100
+</td>
+<td>
+n = 100
+</td>
+<td>
+n = 100
+</td>
+<td>
+n = 100
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Age at onset
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+&lt;.001
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+33.5 (4.9)
+</td>
+<td>
+28.6 (4.5)
+</td>
+<td>
+33.8 (4.9)
+</td>
+<td>
+36.1 (5.0)
+</td>
+<td>
+30.3 (5.7)
+</td>
+<td>
+27.9 (4.9)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Disease duration
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.152
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+19.9 (10.9)
+</td>
+<td>
+18.7 (11.9)
+</td>
+<td>
+19.8 (11.6)
+</td>
+<td>
+22.4 (10.1)
+</td>
+<td>
+18.7 (12.1)
+</td>
+<td>
+20.7 (11.0)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+Age
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+&lt;.001
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+53.4 (11.9)
+</td>
+<td>
+47.2 (12.7)
+</td>
+<td>
+53.6 (13.3)
+</td>
+<td>
+58.5 (11.6)
+</td>
+<td>
+49.0 (13.1)
+</td>
+<td>
+48.6 (12.0)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+UPDRS
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.034
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>
+32.4 (9.7)
+</td>
+<td>
+34.9 (13.1)
+</td>
+<td>
+32.4 (10.1)
+</td>
+<td>
+34.9 (9.2)
+</td>
+<td>
+35.4 (12.3)
+</td>
+<td>
+36.8 (13.1)
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<div id="lien-entre-disease-duration-mutation" class="section level4 hasAnchor" number="4.4.2.1">
+<h4><span class="header-section-number">4.4.2.1</span> Lien entre Disease duration &amp; Mutation<a href="exemple-1-1.html#lien-entre-disease-duration-mutation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans ce contexte, la variable que l’on cherche à expliquer est la durée de la maladie (DD) en fonction de la variable explicative “mutation”. L’équation qui modélise cette relation est donc la suivante : <span class="math inline">\(DD = \beta_0 + \beta_1 Mutation + \epsilon\)</span><br />
+<br />
+On réalise une ANOVA afin de répondre à ce problème. La p-value associée au test ANOVA est supérieure au seuil de 5%. Par conséquent, nous ne pouvons pas rejeter l’hypothèse nulle, et nous concluons qu’il n’y a pas de preuve d’un lien entre la mutation et la durée de la maladie.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="exemple-1-1.html#cb6-1" tabindex="-1"></a>aov <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> rstatix<span class="sc">::</span><span class="fu">anova_test</span>(Disease_duration <span class="sc">~</span> Mutation)</span>
+<span id="cb6-2"><a href="exemple-1-1.html#cb6-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="exemple-1-1.html#cb6-3" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Mutation, <span class="at">y =</span> Disease_duration, <span class="at">color =</span> Mutation))<span class="sc">+</span></span>
+<span id="cb6-4"><a href="exemple-1-1.html#cb6-4" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span><span class="st">&#39;errorbar&#39;</span>, <span class="at">width =</span> <span class="fl">0.4</span>, <span class="at">lwd =</span> <span class="fl">0.85</span>)<span class="sc">+</span></span>
+<span id="cb6-5"><a href="exemple-1-1.html#cb6-5" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">lwd =</span> <span class="fl">0.85</span>)<span class="sc">+</span></span>
+<span id="cb6-6"><a href="exemple-1-1.html#cb6-6" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb6-7"><a href="exemple-1-1.html#cb6-7" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Mutation), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">shape =</span> <span class="dv">23</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.75</span>))<span class="sc">+</span></span>
+<span id="cb6-8"><a href="exemple-1-1.html#cb6-8" tabindex="-1"></a>  <span class="fu">scale_color_aaas</span>()<span class="sc">+</span></span>
+<span id="cb6-9"><a href="exemple-1-1.html#cb6-9" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> rstatix<span class="sc">::</span><span class="fu">get_test_label</span>(aov, <span class="at">detailed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-10"><a href="exemple-1-1.html#cb6-10" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb6-11"><a href="exemple-1-1.html#cb6-11" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Disease duration (in years)&quot;</span>)<span class="sc">+</span></span>
+<span id="cb6-12"><a href="exemple-1-1.html#cb6-12" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb6-13"><a href="exemple-1-1.html#cb6-13" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb6-14"><a href="exemple-1-1.html#cb6-14" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb6-15"><a href="exemple-1-1.html#cb6-15" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb6-16"><a href="exemple-1-1.html#cb6-16" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="age-at-onset-mutation" class="section level4 hasAnchor" number="4.4.2.2">
+<h4><span class="header-section-number">4.4.2.2</span> Age at onset &amp; Mutation<a href="exemple-1-1.html#age-at-onset-mutation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans ce contexte, la variable que l’on cherche à expliquer est l’âge de diagnostic (Age) en fonction de la variable explicative “mutation”. L’équation qui modélise cette relation est donc la suivante : <span class="math inline">\(Age = \beta_0 + \beta_1 Mutation + \epsilon\)</span><br />
+<br />
+La p-value associée au test ANOVA est inférieure au seuil de 5%, ce qui indique qu’il existe un lien statistiquement significatif entre le type de mutation et l’âge au moment du diagnostic. Par conséquent, nous pouvons effectuer des comparaisons post-hoc afin de déterminer les différences spécifiques entre les types de mutations et l’âge au moment du diagnostic.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="exemple-1-1.html#cb7-1" tabindex="-1"></a>aov <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> rstatix<span class="sc">::</span><span class="fu">anova_test</span>(Age_at_onset <span class="sc">~</span> Mutation)</span>
+<span id="cb7-2"><a href="exemple-1-1.html#cb7-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="exemple-1-1.html#cb7-3" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Mutation, <span class="at">y =</span> Age_at_onset, <span class="at">color =</span> Mutation))<span class="sc">+</span></span>
+<span id="cb7-4"><a href="exemple-1-1.html#cb7-4" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span><span class="st">&#39;errorbar&#39;</span>, <span class="at">width =</span> <span class="fl">0.4</span>, <span class="at">lwd =</span> <span class="fl">0.85</span>)<span class="sc">+</span></span>
+<span id="cb7-5"><a href="exemple-1-1.html#cb7-5" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">lwd =</span> <span class="fl">0.85</span>)<span class="sc">+</span></span>
+<span id="cb7-6"><a href="exemple-1-1.html#cb7-6" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb7-7"><a href="exemple-1-1.html#cb7-7" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Mutation), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">shape =</span> <span class="dv">23</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.75</span>)) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="exemple-1-1.html#cb7-8" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb7-9"><a href="exemple-1-1.html#cb7-9" tabindex="-1"></a>  <span class="fu">scale_color_aaas</span>()<span class="sc">+</span></span>
+<span id="cb7-10"><a href="exemple-1-1.html#cb7-10" tabindex="-1"></a>  <span class="fu">scale_fill_aaas</span>()<span class="sc">+</span></span>
+<span id="cb7-11"><a href="exemple-1-1.html#cb7-11" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> rstatix<span class="sc">::</span><span class="fu">get_test_label</span>(aov, <span class="at">detailed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-12"><a href="exemple-1-1.html#cb7-12" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb7-13"><a href="exemple-1-1.html#cb7-13" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Age at onset at onset (in years)&quot;</span>)<span class="sc">+</span></span>
+<span id="cb7-14"><a href="exemple-1-1.html#cb7-14" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb7-15"><a href="exemple-1-1.html#cb7-15" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb7-16"><a href="exemple-1-1.html#cb7-16" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb7-17"><a href="exemple-1-1.html#cb7-17" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-45-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="exemple-1-1.html#cb8-1" tabindex="-1"></a><span class="do">## Modélisation</span></span>
+<span id="cb8-2"><a href="exemple-1-1.html#cb8-2" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Age_at_onset <span class="sc">~</span> Mutation, <span class="at">data =</span> data)</span>
+<span id="cb8-3"><a href="exemple-1-1.html#cb8-3" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(model1)</span></code></pre></div>
+</details>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: Age_at_onset
+##            Sum Sq  Df F value    Pr(&gt;F)    
+## Mutation   5320.6   5  42.732 &lt; 2.2e-16 ***
+## Residuals 14791.8 594                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="exemple-1-1.html#cb10-1" tabindex="-1"></a><span class="do">## Comparaison post hoc</span></span>
+<span id="cb10-2"><a href="exemple-1-1.html#cb10-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> rstatix<span class="sc">::</span><span class="fu">tukey_hsd</span>(Age_at_onset <span class="sc">~</span> Mutation) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="exemple-1-1.html#cb10-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>null.value, <span class="sc">-</span>estimate, <span class="sc">-</span>conf.low, <span class="sc">-</span>conf.high)</span></code></pre></div>
+</details>
+<pre><code>## # A tibble: 15 × 5
+##    term     group1 group2    p.adj p.adj.signif
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;       
+##  1 Mutation f/f    f/s    5.58e-10 ****        
+##  2 Mutation f/f    m/f    9.99e- 1 ns          
+##  3 Mutation f/f    m/m    3.78e- 3 **          
+##  4 Mutation f/f    m/s    8.39e- 5 ****        
+##  5 Mutation f/f    s/s    4.79e-10 ****        
+##  6 Mutation f/s    m/f    4.84e-10 ****        
+##  7 Mutation f/s    m/m    4.79e-10 ****        
+##  8 Mutation f/s    m/s    1.36e- 1 ns          
+##  9 Mutation f/s    s/s    9.52e- 1 ns          
+## 10 Mutation m/f    m/m    1.49e- 2 *           
+## 11 Mutation m/f    m/s    1.27e- 5 ****        
+## 12 Mutation m/f    s/s    4.79e-10 ****        
+## 13 Mutation m/m    m/s    4.79e-10 ****        
+## 14 Mutation m/m    s/s    4.79e-10 ****        
+## 15 Mutation m/s    s/s    1.13e- 2 *</code></pre>
+</div>
+<div id="updrs-mutation" class="section level4 hasAnchor" number="4.4.2.3">
+<h4><span class="header-section-number">4.4.2.3</span> UPDRS &amp; Mutation<a href="exemple-1-1.html#updrs-mutation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans ce contexte, la variable que l’on cherche à expliquer est l’UPDRS (UPDRS) en fonction de la variable explicative “mutation”. L’équation qui modélise cette relation est donc la suivante : <span class="math inline">\(UPDRS = \beta_0 + \beta_1 Mutation + \epsilon\)</span><br />
+<br />
+La p-value associée au test ANOVA est inférieure au seuil de 5%, ce qui indique qu’il existe un lien statistiquement significatif entre le type de mutation et l’UPDRS. Par conséquent, nous pouvons effectuer des comparaisons post-hoc afin de déterminer les différences spécifiques entre les types de mutations et l’UPDRS.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="exemple-1-1.html#cb12-1" tabindex="-1"></a>aov <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> rstatix<span class="sc">::</span><span class="fu">anova_test</span>(UPDRS <span class="sc">~</span> Mutation)</span>
+<span id="cb12-2"><a href="exemple-1-1.html#cb12-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="exemple-1-1.html#cb12-3" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Mutation, <span class="at">y =</span> UPDRS, <span class="at">color =</span> Mutation))<span class="sc">+</span></span>
+<span id="cb12-4"><a href="exemple-1-1.html#cb12-4" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span><span class="st">&#39;errorbar&#39;</span>, <span class="at">width =</span> <span class="fl">0.4</span>, <span class="at">lwd =</span> <span class="fl">0.85</span>)<span class="sc">+</span></span>
+<span id="cb12-5"><a href="exemple-1-1.html#cb12-5" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">lwd =</span> <span class="fl">0.85</span>)<span class="sc">+</span></span>
+<span id="cb12-6"><a href="exemple-1-1.html#cb12-6" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb12-7"><a href="exemple-1-1.html#cb12-7" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Mutation), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">shape =</span> <span class="dv">23</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.75</span>)) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="exemple-1-1.html#cb12-8" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb12-9"><a href="exemple-1-1.html#cb12-9" tabindex="-1"></a>  <span class="fu">scale_color_aaas</span>()<span class="sc">+</span></span>
+<span id="cb12-10"><a href="exemple-1-1.html#cb12-10" tabindex="-1"></a>  <span class="fu">scale_fill_aaas</span>()<span class="sc">+</span></span>
+<span id="cb12-11"><a href="exemple-1-1.html#cb12-11" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> rstatix<span class="sc">::</span><span class="fu">get_test_label</span>(aov, <span class="at">detailed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-12"><a href="exemple-1-1.html#cb12-12" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb12-13"><a href="exemple-1-1.html#cb12-13" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;UPDRS&quot;</span>)<span class="sc">+</span></span>
+<span id="cb12-14"><a href="exemple-1-1.html#cb12-14" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb12-15"><a href="exemple-1-1.html#cb12-15" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb12-16"><a href="exemple-1-1.html#cb12-16" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb12-17"><a href="exemple-1-1.html#cb12-17" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-46-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="exemple-1-1.html#cb13-1" tabindex="-1"></a><span class="do">## Modélisation</span></span>
+<span id="cb13-2"><a href="exemple-1-1.html#cb13-2" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Age_at_onset <span class="sc">~</span> Mutation, <span class="at">data =</span> data)</span>
+<span id="cb13-3"><a href="exemple-1-1.html#cb13-3" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(model1)</span></code></pre></div>
+</details>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: Age_at_onset
+##            Sum Sq  Df F value    Pr(&gt;F)    
+## Mutation   5320.6   5  42.732 &lt; 2.2e-16 ***
+## Residuals 14791.8 594                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="exemple-1-1.html#cb15-1" tabindex="-1"></a><span class="do">## Comparaison post hoc</span></span>
+<span id="cb15-2"><a href="exemple-1-1.html#cb15-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> rstatix<span class="sc">::</span><span class="fu">tukey_hsd</span>(UPDRS <span class="sc">~</span> Mutation) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="exemple-1-1.html#cb15-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>null.value, <span class="sc">-</span>estimate, <span class="sc">-</span>conf.low, <span class="sc">-</span>conf.high)</span></code></pre></div>
+</details>
+<pre><code>## # A tibble: 15 × 5
+##    term     group1 group2  p.adj p.adj.signif
+##    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;       
+##  1 Mutation f/f    f/s    0.63   ns          
+##  2 Mutation f/f    m/f    1      ns          
+##  3 Mutation f/f    m/m    0.635  ns          
+##  4 Mutation f/f    m/s    0.44   ns          
+##  5 Mutation f/f    s/s    0.0706 ns          
+##  6 Mutation f/s    m/f    0.616  ns          
+##  7 Mutation f/s    m/m    1      ns          
+##  8 Mutation f/s    m/s    1      ns          
+##  9 Mutation f/s    s/s    0.847  ns          
+## 10 Mutation m/f    m/m    0.621  ns          
+## 11 Mutation m/f    m/s    0.426  ns          
+## 12 Mutation m/f    s/s    0.0666 ns          
+## 13 Mutation m/m    m/s    1      ns          
+## 14 Mutation m/m    s/s    0.843  ns          
+## 15 Mutation m/s    s/s    0.949  ns</code></pre>
+</div>
+</div>
+</div>
+<div id="régression-linéaire-simple" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> Régression linéaire simple<a href="exemple-1-1.html#régression-linéaire-simple" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="catégorisation-des-variables" class="section level3 hasAnchor" number="4.5.1">
+<h3><span class="header-section-number">4.5.1</span> Catégorisation des variables<a href="exemple-1-1.html#catégorisation-des-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>La variable à expliquer est l’UPDRS, que l’on va chercher à expliquer par l’âge, la mutation (variable mutation_bis), la disease duration, et le sexe.</p>
+</div>
+<div id="age-updrs" class="section level3 hasAnchor" number="4.5.2">
+<h3><span class="header-section-number">4.5.2</span> Age &amp; UPDRS<a href="exemple-1-1.html#age-updrs" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>L’équation qui modélise la relation entre l’UPDRS et l’âge est la suivante : <span class="math inline">\(UPDRS = \beta_0 + \beta_1 Age + \epsilon\)</span>.<br />
+Le coefficient de corrélation associé à cette relation est de 0.8, ce qui indique une relation importante, et la p-value associée au test de significativité de ce coefficient est inférieure au seuil de 5%, démontrant ainsi sa signification statistique. Le coefficient <span class="math inline">\(\beta_1\)</span> est égal à 0.7, ce qui signifie qu’en moyenne, pour chaque année supplémentaire d’âge, l’UPDRS augmente de 0.7 points.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="exemple-1-1.html#cb17-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="exemple-1-1.html#cb17-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Age, <span class="at">y =</span> UPDRS))<span class="sc">+</span></span>
+<span id="cb17-3"><a href="exemple-1-1.html#cb17-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb17-4"><a href="exemple-1-1.html#cb17-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">&quot;darkred&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb17-5"><a href="exemple-1-1.html#cb17-5" tabindex="-1"></a>  <span class="fu">stat_cor</span>()<span class="sc">+</span></span>
+<span id="cb17-6"><a href="exemple-1-1.html#cb17-6" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb17-7"><a href="exemple-1-1.html#cb17-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age (in years)&quot;</span>,</span>
+<span id="cb17-8"><a href="exemple-1-1.html#cb17-8" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;UPDRS&quot;</span>)<span class="sc">+</span></span>
+<span id="cb17-9"><a href="exemple-1-1.html#cb17-9" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb17-10"><a href="exemple-1-1.html#cb17-10" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb17-11"><a href="exemple-1-1.html#cb17-11" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb17-12"><a href="exemple-1-1.html#cb17-12" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-47-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="exemple-1-1.html#cb18-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(UPDRS <span class="sc">~</span> Age, <span class="at">data =</span> data)</span>
+<span id="cb18-2"><a href="exemple-1-1.html#cb18-2" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div>
+</details>
+<pre><code>## 
+## Call:
+## lm(formula = UPDRS ~ Age, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -20.1050  -5.0260  -0.5148   4.6961  18.8317 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -1.9962     1.1515  -1.733   0.0835 .  
+## Age           0.7050     0.0216  32.644   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.857 on 598 degrees of freedom
+## Multiple R-squared:  0.6405, Adjusted R-squared:  0.6399 
+## F-statistic:  1066 on 1 and 598 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="disease-duration-updrs" class="section level3 hasAnchor" number="4.5.3">
+<h3><span class="header-section-number">4.5.3</span> Disease duration &amp; UPDRS<a href="exemple-1-1.html#disease-duration-updrs" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>L’équation qui modélise la relation entre l’UPDRS et l’âge est la suivante : <span class="math inline">\(UPDRS = \beta_0 + \beta_1 DD + \epsilon\)</span>.<br />
+Le coefficient de corrélation associé à cette relation est de 0.88, ce qui indique une relation importante, et la p-value associée au test de significativité de ce coefficient est inférieure au seuil de 5%, démontrant ainsi sa signification statistique. Le coefficient <span class="math inline">\(\beta_1\)</span> est égal à 0.9, ce qui signifie qu’en moyenne, pour chaque année supplémentaire de disease duration, l’UPDRS augmente de 0.9 points.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="exemple-1-1.html#cb20-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="exemple-1-1.html#cb20-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Disease_duration, <span class="at">y =</span> UPDRS))<span class="sc">+</span></span>
+<span id="cb20-3"><a href="exemple-1-1.html#cb20-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb20-4"><a href="exemple-1-1.html#cb20-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">&quot;darkred&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb20-5"><a href="exemple-1-1.html#cb20-5" tabindex="-1"></a>  <span class="fu">stat_cor</span>()<span class="sc">+</span></span>
+<span id="cb20-6"><a href="exemple-1-1.html#cb20-6" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb20-7"><a href="exemple-1-1.html#cb20-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Disease duration (in years)&quot;</span>,</span>
+<span id="cb20-8"><a href="exemple-1-1.html#cb20-8" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;UPDRS (in years)&quot;</span>)<span class="sc">+</span></span>
+<span id="cb20-9"><a href="exemple-1-1.html#cb20-9" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb20-10"><a href="exemple-1-1.html#cb20-10" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb20-11"><a href="exemple-1-1.html#cb20-11" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb20-12"><a href="exemple-1-1.html#cb20-12" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-48-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="exemple-1-1.html#cb21-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(UPDRS <span class="sc">~</span> Disease_duration, <span class="at">data =</span> data)</span>
+<span id="cb21-2"><a href="exemple-1-1.html#cb21-2" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div>
+</details>
+<pre><code>## 
+## Call:
+## lm(formula = UPDRS ~ Disease_duration, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -15.3493  -3.7209  -0.0888   3.8971  13.1464 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      16.61022    0.44684   37.17   &lt;2e-16 ***
+## Disease_duration  0.89185    0.01944   45.88   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5.379 on 598 degrees of freedom
+## Multiple R-squared:  0.7788, Adjusted R-squared:  0.7784 
+## F-statistic:  2105 on 1 and 598 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div id="figure-sur-les-données-brutes" class="section level2 hasAnchor" number="4.6">
+<h2><span class="header-section-number">4.6</span> Figure sur les données brutes<a href="exemple-1-1.html#figure-sur-les-données-brutes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Voici une figure représentant l’évolution de l’UPDRS en fonction de la durée de la maladie, en tenant compte du type de mutation. J’ai classé l’âge des patients en fonction de leurs quantiles dans la distribution des âges.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="exemple-1-1.html#cb23-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="exemple-1-1.html#cb23-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Age_discret =</span> <span class="fu">cut</span>(Age, </span>
+<span id="cb23-3"><a href="exemple-1-1.html#cb23-3" tabindex="-1"></a>                    <span class="at">breaks =</span> <span class="fu">quantile</span>(Age, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>)), </span>
+<span id="cb23-4"><a href="exemple-1-1.html#cb23-4" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Q1&quot;</span>, <span class="st">&quot;Q2&quot;</span>, <span class="st">&quot;Q3&quot;</span>, <span class="st">&quot;Q4&quot;</span>),</span>
+<span id="cb23-5"><a href="exemple-1-1.html#cb23-5" tabindex="-1"></a>                    <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-6"><a href="exemple-1-1.html#cb23-6" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Mutation_bis =</span> <span class="fu">ifelse</span>(Mutation <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;m/s&quot;</span>, <span class="st">&quot;f/s&quot;</span>, <span class="st">&quot;s/s&quot;</span>), <span class="st">&quot;senescence&quot;</span>, <span class="st">&quot;non-senescence&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-7"><a href="exemple-1-1.html#cb23-7" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Disease_duration, <span class="at">y =</span> UPDRS, <span class="at">color =</span> Mutation_bis))<span class="sc">+</span></span>
+<span id="cb23-8"><a href="exemple-1-1.html#cb23-8" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.45</span>)<span class="sc">+</span></span>
+<span id="cb23-9"><a href="exemple-1-1.html#cb23-9" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">group =</span> Mutation_bis), <span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="fl">1.5</span>)<span class="sc">+</span></span>
+<span id="cb23-10"><a href="exemple-1-1.html#cb23-10" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Age_discret, <span class="at">nrow =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb23-11"><a href="exemple-1-1.html#cb23-11" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb23-12"><a href="exemple-1-1.html#cb23-12" tabindex="-1"></a>  <span class="fu">scale_color_aaas</span>()<span class="sc">+</span></span>
+<span id="cb23-13"><a href="exemple-1-1.html#cb23-13" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</span>
+<span id="cb23-14"><a href="exemple-1-1.html#cb23-14" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-15"><a href="exemple-1-1.html#cb23-15" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb23-16"><a href="exemple-1-1.html#cb23-16" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb23-17"><a href="exemple-1-1.html#cb23-17" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">13</span>))<span class="sc">+</span></span>
+<span id="cb23-18"><a href="exemple-1-1.html#cb23-18" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Disease duration (in years)&quot;</span>,</span>
+<span id="cb23-19"><a href="exemple-1-1.html#cb23-19" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;UPDRS on&quot;</span>)</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-49-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="modélisation" class="section level2 hasAnchor" number="4.7">
+<h2><span class="header-section-number">4.7</span> Modélisation<a href="exemple-1-1.html#modélisation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Le modèle qui correspond au critère de jugement principal est le suivant :<br />
+<br />
+<span class="math inline">\(UPDRS = \beta_0 + \beta_1 Mutation \times DD + \beta_2 Mutation + \beta_3DD + \beta_4 Age + \epsilon\)</span><br />
+<br />
+On peut lire chaque coefficient <span class="math inline">\(\beta\)</span> dans la sortie R suivante. Le modèle se réécrit donc de la manière suivante :<br />
+<br />
+<span class="math inline">\(UPDRS = 8.4 + 0.25* Mutation \times DD + 0.03 * Mutation + 0.49 * DD + 0.27* Age + \epsilon\)</span><br />
+<br />
+</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="exemple-1-1.html#cb24-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="exemple-1-1.html#cb24-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Mutation_bis =</span> <span class="fu">ifelse</span>(Mutation <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;m/s&quot;</span>, <span class="st">&quot;f/s&quot;</span>, <span class="st">&quot;s/s&quot;</span>), <span class="st">&quot;senescence&quot;</span>, <span class="st">&quot;non-senescence&quot;</span>)) </span>
+<span id="cb24-3"><a href="exemple-1-1.html#cb24-3" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(UPDRS <span class="sc">~</span> Disease_duration<span class="sc">*</span>Mutation_bis <span class="sc">+</span> Age <span class="sc">+</span> Sex, <span class="at">data =</span> data)</span>
+<span id="cb24-4"><a href="exemple-1-1.html#cb24-4" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code></pre></div>
+</details>
+<pre><code>## 
+## Call:
+## lm(formula = UPDRS ~ Disease_duration * Mutation_bis + Age + 
+##     Sex, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -13.3883  -3.3352  -0.4041   3.8493  10.2274 
+## 
+## Coefficients:
+##                                         Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                              8.40304    1.41180   5.952 4.53e-09
+## Disease_duration                         0.49010    0.04651  10.538  &lt; 2e-16
+## Mutation_bissenescence                   0.03519    0.80139   0.044    0.965
+## Age                                      0.27039    0.03772   7.168 2.27e-12
+## SexMale                                 -0.46954    0.38593  -1.217    0.224
+## Disease_duration:Mutation_bissenescence  0.25749    0.03405   7.563 1.51e-13
+##                                            
+## (Intercept)                             ***
+## Disease_duration                        ***
+## Mutation_bissenescence                     
+## Age                                     ***
+## SexMale                                    
+## Disease_duration:Mutation_bissenescence ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.676 on 594 degrees of freedom
+## Multiple R-squared:  0.834,  Adjusted R-squared:  0.8326 
+## F-statistic: 596.8 on 5 and 594 DF,  p-value: &lt; 2.2e-16</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="exemple-1-1.html#cb26-1" tabindex="-1"></a><span class="fu">Anova</span>(model2)</span></code></pre></div>
+</details>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: UPDRS
+##                                Sum Sq  Df  F value    Pr(&gt;F)    
+## Disease_duration               5247.8   1 240.0291 &lt; 2.2e-16 ***
+## Mutation_bis                   3006.9   1 137.5313 &lt; 2.2e-16 ***
+## Age                            1123.2   1  51.3751 2.273e-12 ***
+## Sex                              32.4   1   1.4802    0.2242    
+## Disease_duration:Mutation_bis  1250.5   1  57.1966 1.506e-13 ***
+## Residuals                     12986.8 594                       
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="analyse-des-contrastes" class="section level2 hasAnchor" number="4.8">
+<h2><span class="header-section-number">4.8</span> Analyse des contrastes<a href="exemple-1-1.html#analyse-des-contrastes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Afin de comparer l’effet de la mutation sur l’UPDRS, nous devons tenir compte de la durée de la maladie (disease duration). C’est pourquoi nous devons fixer cette variable si nous voulons observer les différences entre les deux types de mutations. Nous prenons le premier quantile, la médiane et le dernier quantile pour la variable de durée de la maladie, puis nous comparons les différences de valeurs de l’UPDRS entre les mutations senescence et les mutations non-senescence. Nous observons que plus la durée de la maladie augmente, plus l’écart d’UPDRS augmente.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="exemple-1-1.html#cb28-1" tabindex="-1"></a>cut_disease_duration <span class="ot">&lt;-</span> <span class="fu">quantile</span>(data<span class="sc">$</span>Disease_duration)[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb28-2"><a href="exemple-1-1.html#cb28-2" tabindex="-1"></a>cut_age <span class="ot">&lt;-</span> <span class="fu">mean</span>(data<span class="sc">$</span>Age)</span>
+<span id="cb28-3"><a href="exemple-1-1.html#cb28-3" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="exemple-1-1.html#cb28-4" tabindex="-1"></a>comparaisons <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(model2, <span class="sc">~</span> Mutation_bis <span class="sc">|</span> Disease_duration, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">Disease_duration =</span> cut_disease_duration))</span>
+<span id="cb28-5"><a href="exemple-1-1.html#cb28-5" tabindex="-1"></a>emmeans<span class="sc">::</span><span class="fu">contrast</span>(comparaisons, <span class="at">interaction =</span> <span class="fu">c</span>(<span class="st">&quot;pairwise&quot;</span>))</span></code></pre></div>
+</details>
+<pre><code>## Disease_duration = 10:
+##  Mutation_bis_pairwise         estimate    SE  df t.ratio p.value
+##  (non-senescence) - senescence    -2.61 0.548 594  -4.762  &lt;.0001
+## 
+## Disease_duration = 21:
+##  Mutation_bis_pairwise         estimate    SE  df t.ratio p.value
+##  (non-senescence) - senescence    -5.44 0.439 594 -12.410  &lt;.0001
+## 
+## Disease_duration = 29:
+##  Mutation_bis_pairwise         estimate    SE  df t.ratio p.value
+##  (non-senescence) - senescence    -7.50 0.538 594 -13.935  &lt;.0001
+## 
+## Results are averaged over the levels of: Sex</code></pre>
+</div>
+<div id="figure-finale" class="section level2 hasAnchor" number="4.9">
+<h2><span class="header-section-number">4.9</span> Figure finale<a href="exemple-1-1.html#figure-finale" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="exemple-1-1.html#cb30-1" tabindex="-1"></a>interactions<span class="sc">::</span><span class="fu">interact_plot</span>(model2,</span>
+<span id="cb30-2"><a href="exemple-1-1.html#cb30-2" tabindex="-1"></a>                            <span class="at">pred =</span> <span class="st">&quot;Disease_duration&quot;</span>,</span>
+<span id="cb30-3"><a href="exemple-1-1.html#cb30-3" tabindex="-1"></a>                            <span class="at">modx =</span> <span class="st">&quot;Mutation_bis&quot;</span>,</span>
+<span id="cb30-4"><a href="exemple-1-1.html#cb30-4" tabindex="-1"></a>                            <span class="at">mod2 =</span> Age)<span class="sc">+</span></span>
+<span id="cb30-5"><a href="exemple-1-1.html#cb30-5" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
+<span id="cb30-6"><a href="exemple-1-1.html#cb30-6" tabindex="-1"></a>  <span class="fu">scale_color_aaas</span>()<span class="sc">+</span></span>
+<span id="cb30-7"><a href="exemple-1-1.html#cb30-7" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</span>
+<span id="cb30-8"><a href="exemple-1-1.html#cb30-8" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb30-9"><a href="exemple-1-1.html#cb30-9" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb30-10"><a href="exemple-1-1.html#cb30-10" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb30-11"><a href="exemple-1-1.html#cb30-11" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">10</span>))<span class="sc">+</span></span>
+<span id="cb30-12"><a href="exemple-1-1.html#cb30-12" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Disease Duration&quot;</span>,</span>
+<span id="cb30-13"><a href="exemple-1-1.html#cb30-13" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;UPDRS on&quot;</span>)</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-52-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="vérifications-des-hypothèses" class="section level2 hasAnchor" number="4.10">
+<h2><span class="header-section-number">4.10</span> Vérifications des hypothèses<a href="exemple-1-1.html#vérifications-des-hypothèses" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="résidus-1" class="section level3 hasAnchor" number="4.10.1">
+<h3><span class="header-section-number">4.10.1</span> Résidus<a href="exemple-1-1.html#résidus-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="exemple-1-1.html#cb31-1" tabindex="-1"></a>ggResidpanel<span class="sc">::</span><span class="fu">resid_panel</span>(model)</span></code></pre></div>
+</details>
+<p><img src="_main_files/figure-html/unnamed-chunk-53-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="colinéarité" class="section level3 hasAnchor" number="4.10.2">
+<h3><span class="header-section-number">4.10.2</span> Colinéarité<a href="exemple-1-1.html#colinéarité" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Les VIF associés aux variables Disease_duration, Mutation_bis, Age, et Disease_duration:Mutation_bis sont légèrement élevés, indiquant une certaine corrélation avec d’autres variables explicatives du modèle. Ces valeurs sont en dehors du seuil de 10, au-delà duquel la multicollinéarité est généralement considérée comme problématique, il est recommandé de prendre des mesures pour atténuer cette multicollinéarité. Cela peut inclure la suppression de certaines variables, la combinaison de variables apparentées, ou même la collecte de données supplémentaires, afin de garantir des résultats fiables dans notre modèle.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="exemple-1-1.html#cb32-1" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">vif</span>(model2)</span></code></pre></div>
+</details>
+<pre><code>##              Disease_duration                  Mutation_bis 
+##                      7.576537                      4.406205 
+##                           Age                           Sex 
+##                      6.561542                      1.020252 
+## Disease_duration:Mutation_bis 
+##                      5.136705</code></pre>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="interprétation.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/03-Exemple1.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
