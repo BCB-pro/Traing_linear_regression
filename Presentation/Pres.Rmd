@@ -1,0 +1,68 @@
+---
+title: "Linear Regression"
+author: "Baptiste CRINIERE-BOIZET"
+institute: Data Analysis Core
+output: binb::metropolis
+    # beamer_presentation:
+    # theme: "metropolis"
+header-includes:
+  - \definecolor{mycolor}{HTML}{e23d18}
+  - \definecolor{mycolor2}{HTML}{002e82}
+  - \setbeamercolor{title}{fg=mycolor2}
+  - \setbeamercolor{frametitle}{fg=white}
+  - \setbeamercolor{progress bar}{fg=mycolor}
+  - \setbeamercolor{block title}{fg=mycolor}
+  - \setbeamercolor{normal text}{fg=mycolor2}
+  - \setbeamercolor{palette primary}{fg=white, bg=mycolor2}
+  - \setbeamercolor{palette secondary}{fg=mycolor, bg=mycolor}
+  - \setbeamercolor{itemize item}{fg=mycolor}
+  - \setbeamercolor{itemize subitem}{fg=mycolor}
+  - \setbeamercolor{itemize subsubitem}{fg=mycolor}
+  - \setbeamercolor{enumerate item}{fg=mycolor}
+  - \setbeamercolor{enumerate subitem}{fg=mycolor}
+  - \setbeamercolor{enumerate subsubitem}{fg=mycolor}
+  - \setbeamercolor{footline}{fg=mycolor}
+  - \titlegraphic{\vspace{7cm}\flushright\includegraphics[width=4cm]{ICM_rvb.png}}
+  # - \usepackage{animate}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(fig.align = "center")
+knitr::opts_chunk$set(out.width="110%")
+```
+
+\tableofcontents[sectionstyle=show, subsectionstyle=hide]
+
+# Theory
+```{r, results='hide'}
+library(tidyverse)
+library(ggpubr)
+library(MASS)
+library(ggsci)
+library(emmeans)
+library(plotly)
+set.seed(1234)
+X <- rnorm(100, mean = 175, sd = 10)
+Res <- rnorm(100, mean = 0, sd = 5)
+Y <- X + Res
+data <- data.frame(X, Y)
+mod <- lm(Y ~ X, data)
+summary(mod)
+```
+
+
+## Dependent Variable and Independent Variables
+
+
+
+- Key Distinction: Dependent Variable (Y) vs Independent Variables (X1, X2, etc.)
+\vspace{0.5cm}
+- Dependent Variable = Response or Explained Variable
+\vspace{0.5cm}
+- Independent Variable = Predictor or Explanatory
+\vspace{0.5cm}
+- Choice based on logic or theory, for example: child's height depending on the mother's height
+

@@ -62,7 +62,7 @@ summary(mod)
 \vspace{0.5cm}
 - Dependent Variable = Response or Explained Variable
 \vspace{0.5cm}
-- Independent Variable = Predictor or Explanatory
+- Independent Variable = Predictor or Explanatory Variable
 \vspace{0.5cm}
 - Choice based on logic or theory, for example: child's height depending on the mother's height
 
@@ -178,7 +178,7 @@ data %>%
 
 ::::
 :::
-# Hypothesis Checking
+# Hypotheses Checking
 ```{r}
 set.seed(123)
 
@@ -195,7 +195,7 @@ data <- data.frame(Age = ages, Family = as.factor(rep(1:3, each = 20)), Height =
 ```
 
 
-## List of Key Hypothesis
+## List of Key Hypotheses
 
 - \textbf{Independence}: The observations must be independent of each other
 \vspace{0.5cm}
@@ -212,7 +212,7 @@ data <- data.frame(Age = ages, Family = as.factor(rep(1:3, each = 20)), Height =
 \begin{itemize}
 \item Ensure that observations are not related to each other
 \item \textbf{Consequences}: Estimation bias, reliability of tests
-\item \textbf{Check} : no regrouping in the distribution of residues
+\item \textbf{Check} : no regrouping in the distribution of residuals
 \end{itemize}
 :::: 
 :::: column
@@ -224,7 +224,6 @@ data %>%
   geom_smooth(method = "lm", se = FALSE, color = "#e23d18", size = 3, linetype = "dashed")+
   scale_color_npg()+
   theme_classic()+
-  labs(x = "Age", y = "Taille")+
   theme(axis.line = element_line(size = 3),
         axis.title = element_text(size = 25),
         axis.text = element_blank(),
@@ -263,7 +262,6 @@ data %>%
   geom_smooth(method = "lm", se = FALSE, color = "#e23d18", size = 3)+
   stat_function(fun = curve, color = "#e23d18", size = 3)+
   theme_classic()+
-  labs(y = "Taille")+
   theme(axis.line = element_line(size = 3),
         axis.title = element_text(size = 25),
         axis.text = element_blank(),
@@ -297,7 +295,7 @@ data %>%
   geom_smooth(method = "lm", se = FALSE, color = "#e23d18", size = 5)+
   theme_classic()+
   labs(x = "Age",
-       y = "Temps de réaction")+
+       y = "Time of reaction")+
   theme(axis.line = element_line(size = 3),
         axis.title = element_text(size = 25),
         axis.text = element_blank(),
@@ -333,25 +331,25 @@ E <- rnorm(2*n, mean = 0, sd = 7)
 Poids <- 0.4*Taille + 1.5*Sexe + 0.05*Taille*Sexe + 0.05*Age + E
 data <- data.frame(Poids, Taille, Sexe, Age) %>% 
   dplyr::mutate(Sexe = Sexe %>% factor %>% 
-                  forcats::fct_recode("Homme" = "1", "Femme" = "0")) 
+                  forcats::fct_recode("Man" = "1", "Woman" = "0")) 
 ```
 
-## Imple regression
+## Simple regression
 - \textbf{Definition} : A simple linear regression uses a single explanatory variable
 \vspace{0.5cm}
 - Types of explanatory variables: Continuous or Categorical
 \vspace{0.5cm}
 - Example: Analysis of the relationship between weight and height & weight and sex
 
-## Régression simple
-### Prédicteur continu
+## Simple regression
+### Continuous predictor
 \vspace{1cm}
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Modèle} : $Poids = \beta_0 + \beta_1Taille + \epsilon$
-\item $\beta_0 =  -63$ et $\beta_1 = 0.81$, on teste aussi la non-nullité de chaque coefficient 
-\item $R^{2}$ la part de variance expliquée par notre modèle est de 46\%
+\item \textbf{Model}: $Weight = \beta_0 + \beta_1 Height + \epsilon$
+\item $\beta_0 = -63$ and $\beta_1 = 0.81$, we also test the non-nullity of each coefficient 
+\item $R^{2}$, the portion of variance explained by our model, is 46%
 \end{itemize}
 ::::
 :::: column
@@ -367,20 +365,21 @@ data %>%
         axis.title = element_text(size = 25),
         axis.text = element_text(size = 20),
         panel.background = element_rect(fill = "transparent"),
-        plot.background = element_rect(fill = "transparent"))
+        plot.background = element_rect(fill = "transparent"))+
+  labs(x = "Height", y = "Weight")
 ```
 ::::
 :::
 
-## Régression simple
-### Prédicteur discret
+## Simple regression
+### Discrete predictor
 \vspace{1cm}
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Modèle} : $Poids = \beta_0 + \beta_1Taille + \epsilon$
-\item $\beta_0 =  -63$ et $\beta_1 = 0.81$, on teste aussi la non-nullité de chaque coefficient 
-\item $R^{2}$ la part de variance expliquée par notre modèle est de 46\%
+\item \textbf{Model}: $Weight = \beta_0 + \times \text{1}_{\{Man\}} + \epsilon$
+\item $\beta_0 = -63$ and $\beta_1 = 0.81$, we also test the non-nullity of each coefficient 
+\item $R^{2}$, the proportion of variance explained by our model, is 46%
 \end{itemize}
 ::::
 :::: column
@@ -398,28 +397,28 @@ data %>%
         legend.position = "none",
         panel.background = element_rect(fill = "transparent"),
         plot.background = element_rect(fill = "transparent"))+
-  labs(x = "")
+  labs(x = "", color = "Sex", y = "Weight")
 ```
 ::::
 :::
 
-## Régression multiple
+## Multiple regression
 
-- \textbf{Définition} : régression avec plusieurs variables explicatives
+- \textbf{Definition}: Regression with multiple explanatory variables
 \vspace{0.5cm}
-- \textbf{Ajuster} notre modèle par une nouvelle variable explicative
+- \textbf{Adjust} our model by incorporating a new explanatory variable
 \vspace{0.5cm}
-- \textbf{Interaction} lorsque deux variables influencent simultanément la variable à expliquer
+- \textbf{Interaction}: when two variables simultaneously influence the variable being explained
 
-## Régression multiple : ajustement
-### Cas discret
+## Multiple regression : Adjust
+### Discrete Case
 \vspace{1cm}
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Modèle} : $Poids = \beta_0 + \beta_1 \times \text{1}_{\{Homme\}} +  \beta_2 \times Taille + \epsilon$
-\item Droites parallèles représentant chaque sous-groupe d'une catégorie
-\item $R^{2}$ la part de variance expliquée par notre modèle est de 55\%
+\item \textbf{Model} : $Weight = \beta_0 + \beta_1 \times \text{1}_{\{Man\}} +  \beta_2 \times Height + \epsilon$
+\item Parallel lines representing each subgroup of a category
+\item $R^{2}$ the share of variance explained by our model is 55\%
 \end{itemize}
 ::::
 
@@ -437,20 +436,20 @@ data %>%
         axis.text = element_text(size = 25),
         legend.position = "none",
         panel.background = element_rect(fill = "transparent"),
-        plot.background = element_rect(fill = "transparent"))
+        plot.background = element_rect(fill = "transparent"))+
+  labs(x = "Height", y = "Weight")
 ```
 ::::
 :::
 
-## Régression multiple : ajustement
-### Cas continu
+## Multiple regression : Adjust
+### Continuous Case
 \vspace{1cm}
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Modèle} : $Poids = \beta_0 + \beta_1 \times \text{1}_{\{Homme\}} +  \beta_2 \times Taille + \epsilon$
-\item Droites parallèles représentant chaque sous-groupe d'une catégorie
-\item $R^{2}$ la part de variance expliquée par notre modèle est de 55\%
+\item \textbf{Modèle} : $Poids = \beta_0 + \beta_1 \times Age +  \beta_2 \times Taille + \epsilon$
+\item Parallel lines representing each age unit
 \end{itemize}
 ::::
 
@@ -471,20 +470,21 @@ data1 %>%
         axis.text = element_text(size = 25),
         legend.position = "none",
         panel.background = element_rect(fill = "transparent"),
-        plot.background = element_rect(fill = "transparent"))
+        plot.background = element_rect(fill = "transparent"))+
+  labs(x = "Height", y = "Weight")
 ```
 ::::
 :::
 
-## Régression multiple : interaction
-### Cas discret
+## Multiple regression: interaction
+### Discrete Case
 \vspace{1cm}
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Définition} : Une interaction survient lorsque l'effet d'une variable sur la variable réponse dépend du niveau d'une autre variable
-\item \textbf{Equation} : $Poids = \beta_0 + \beta_1 \times \text{1}_{\{Homme\}} + \beta_2 \times Taille + \beta_3 \times \text{1}_{\{Homme\}} \times Taille + \epsilon$
-\item Les hommes ont une pente plus prononcée que les femmes
+\item \textbf{Definition} : An interaction occurs when the effect of one variable on the response variable depends on the level of another variable
+\item \textbf{Equation} : $Weight = \beta_0 + \beta_1 \times \text{1}_{\{Man\}} + \beta_2 \times Height + \beta_3 \times \text{1}_{\{Man\}} \times Height + \epsilon$
+\item Men have a steeper slope than women
 \end{itemize}
 ::::
 
@@ -492,7 +492,7 @@ data1 %>%
 ```{r}
 data %>% 
   ggplot(aes(x = Taille, y = Poids, color = Sexe, group = Sexe))+
-  geom_point(alpha = 0.3)+
+  geom_point(size = 5)+
   geom_smooth(method = "lm", se = FALSE, alpha = 0.7, size = 4)+
   theme_classic()+
   scale_color_manual(values = c("#002e82", "#e23d18"))+
@@ -501,7 +501,8 @@ data %>%
         axis.text = element_text(size = 25),
         legend.position = "none",
         panel.background = element_rect(fill = "transparent"),
-        plot.background = element_rect(fill = "transparent"))
+        plot.background = element_rect(fill = "transparent"))+
+  labs(x = "Height", y = "Weight")
 ```
 ::::
 :::
