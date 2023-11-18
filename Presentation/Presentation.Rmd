@@ -377,9 +377,9 @@ data %>%
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Model}: $Weight = \beta_0 + \times \text{1}_{\{Man\}} + \epsilon$
-\item $\beta_0 = -63$ and $\beta_1 = 0.81$, we also test the non-nullity of each coefficient 
-\item $R^{2}$, the proportion of variance explained by our model, is 46%
+\item \textbf{Model}: $Weight = \beta_0 + \beta_1 \times \text{1}_{\{Man\}} + \epsilon$
+\item $\beta_0 = 68$ and $\beta_1 = 15$, we also test the non-nullity of each coefficient 
+\item $R^{2}$, the proportion of variance explained by our model, is 44\%
 \end{itemize}
 ::::
 :::: column
@@ -448,7 +448,7 @@ data %>%
 ::: columns
 :::: column
 \begin{itemize}
-\item \textbf{Modèle} : $Poids = \beta_0 + \beta_1 \times Age +  \beta_2 \times Taille + \epsilon$
+\item \textbf{Model}: $Weight = \beta_0 + \beta_1 \times Age +  \beta_2 \times Height + \epsilon$
 \item Parallel lines representing each age unit
 \end{itemize}
 ::::
