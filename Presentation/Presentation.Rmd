@@ -349,7 +349,7 @@ data <- data.frame(Poids, Taille, Sexe, Age) %>%
 \begin{itemize}
 \item \textbf{Model}: $Weight = \beta_0 + \beta_1 Height + \epsilon$
 \item $\beta_0 = -63$ and $\beta_1 = 0.81$, we also test the non-nullity of each coefficient 
-\item $R^{2}$, the portion of variance explained by our model, is 46%
+\item $R^{2}$, the portion of variance explained by our model, is 46\%
 \end{itemize}
 ::::
 :::: column
